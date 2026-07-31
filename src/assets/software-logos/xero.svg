@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 10 125 40">
+  <g>
+    <circle cx="28" cy="30" r="18" fill="#13B5EA"/>
+    <path d="M20 22 L36 38 M36 22 L20 38" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/>
+  </g>
+  <text x="56" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="30" font-weight="700" fill="#13B5EA" letter-spacing="-0.5">xero</text>
+</svg>

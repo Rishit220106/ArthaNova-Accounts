@@ -1,0 +1,15 @@
+{
+  "count": 91,
+  "pattern": "frames/frame_%04d.webp",
+  "chapters": [
+    {
+      "name": "core_node",
+      "start": 0.0
+    },
+    {
+      "name": "quantum_grid",
+      "start": 3.6
+    }
+  ],
+  "total_duration": 7.6
+}

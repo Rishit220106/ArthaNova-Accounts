@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 8 132 44">
+  <g>
+    <path d="M12 12 H30 C40 12, 40 44, 30 44 H12 Z" fill="#003366"/>
+    <path d="M19 19 H28 C33 19, 33 37, 28 37 H19 Z" fill="#D4AF37"/>
+  </g>
+  <text x="48" y="31" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="800" fill="#003366">Drake</text>
+  <text x="48" y="45" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#D4AF37" letter-spacing="2">SOFTWARE</text>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 10 135 40">
+  <g>
+    <circle cx="28" cy="30" r="18" fill="#D8232A"/>
+    <path d="M20 30 A 9 9 0 1 1 36 30 A 9 9 0 1 1 20 30" fill="none" stroke="#FFFFFF" stroke-width="3.5"/>
+  </g>
+  <text x="56" y="34" font-family="'Times New Roman', Times, Georgia, serif" font-size="28" font-weight="700" fill="#D8232A" letter-spacing="1">CCH</text>
+  <text x="57" y="47" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#444444" letter-spacing="0.5">Wolters Kluwer</text>
+</svg>

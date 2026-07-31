@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 12 132 36">
+  <g>
+    <path d="M10 14 H28 C36 14, 36 28, 28 28 H20 L34 42 H25 L15 28 H10 V42 H5 V14 Z" fill="#E31B23"/>
+  </g>
+  <text x="44" y="39" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="700" fill="#0A2540">Reckon</text>
+</svg>

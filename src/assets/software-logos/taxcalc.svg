@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 10 142 40">
+  <g>
+    <rect x="10" y="10" width="36" height="38" rx="7" fill="#E05A47"/>
+    <path d="M20 22 H34 M20 28 H34 M20 34 H26 M30 34 H34" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <text x="54" y="37" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="26" font-weight="800" fill="#0B1D38">Tax<tspan fill="#E05A47">Calc</tspan></text>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 12 120 36">
+  <g>
+    <circle cx="16" cy="30" r="4.5" fill="#FF8000"/>
+    <circle cx="27" cy="21" r="4" fill="#FF8000"/>
+    <circle cx="38" cy="30" r="4.5" fill="#FF8000"/>
+    <circle cx="27" cy="39" r="4" fill="#FF8000"/>
+  </g>
+  <text x="52" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="700" fill="#002D62">Digita</text>
+</svg>
