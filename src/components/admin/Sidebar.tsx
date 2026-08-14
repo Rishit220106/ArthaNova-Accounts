@@ -63,11 +63,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 <Building2 className="w-5 h-5" />
               </div>
               <div>
-                <h1 className="text-sm font-bold text-white tracking-wider flex items-center gap-1.5">
-                  ArthaNova Accounts
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-gradient-to-r from-blue-500/30 to-pink-500/30 text-amber-300 font-mono border border-amber-400/20">PRO</span>
+                <h1 className="text-sm font-serif font-semibold text-white tracking-tight flex flex-col justify-center leading-none">
+                  <span>ArthaNova</span>
+                  <span className="text-[0.60em] font-medium tracking-widest text-[#D4AF37] uppercase mt-1">Accounts</span>
                 </h1>
-                <p className="text-[10px] uppercase tracking-widest text-blue-400 font-semibold mt-0.5">
+                <p className="text-[10px] uppercase tracking-widest text-blue-400 font-semibold mt-1">
                   Admin Portal
                 </p>
               </div>
