@@ -33,6 +33,8 @@ export interface PublicContactPayload {
   email: string;
   company: string;
   country: string;
+  services?: string[];
+  service?: string;
   message: string;
 }
 
@@ -50,6 +52,12 @@ export const mapBackendContactToFrontend = (item: any): Contact => {
     status = 'New';
   }
 
+  const rawServices: string[] = Array.isArray(item.services) && item.services.length > 0
+    ? item.services
+    : (item.service ? [item.service] : []);
+
+  const serviceFormatted = rawServices.length > 0 ? rawServices.join(' · ') : (item.service || 'Corporate Inquiry');
+
   return {
     id: item._id || item.id || '',
     name: item.name || 'Anonymous',
@@ -57,7 +65,8 @@ export const mapBackendContactToFrontend = (item: any): Contact => {
     phone: item.phone || '',
     company: item.company || 'N/A',
     country: item.country || 'N/A',
-    service: item.service || 'Corporate Inquiry',
+    service: serviceFormatted,
+    services: rawServices,
     message: item.message || '',
     status: status,
     createdDate: item.createdAt || item.createdDate || new Date().toISOString(),

@@ -1,7 +1,64 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 10 134 40">
-  <g>
-    <rect x="10" y="10" width="36" height="38" rx="7" fill="#00A3E0"/>
-    <path d="M20 20 H34 V36 H20 Z M24 26 H30 M24 30 H28" fill="none" stroke="#FFFFFF" stroke-width="2.5"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 22 505 145" width="100%" height="100%">
+  <defs>
+    <linearGradient id="tfGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#99C553"/>
+      <stop offset="100%" stop-color="#7AA93A"/>
+    </linearGradient>
+    <linearGradient id="tfGrey" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#606264"/>
+      <stop offset="100%" stop-color="#404244"/>
+    </linearGradient>
+    <linearGradient id="tfRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E24A45"/>
+      <stop offset="100%" stop-color="#C52825"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(10, 10)">
+    <!-- Column 1 (Leftmost / Smallest) -->
+    <path d="M 35 48 L 58 43 L 58 58 L 35 63 Z" fill="#8BB74A"/>
+    <path d="M 58 43 L 64 45 L 64 60 L 58 58 Z" fill="#5F822E"/>
+    <path d="M 35 48 L 41 46 L 64 45 L 58 43 Z" fill="#A8D65C"/>
+
+    <path d="M 35 67 L 58 62 L 58 84 L 35 89 Z" fill="#525456"/>
+    <path d="M 58 62 L 64 64 L 64 86 L 58 84 Z" fill="#36383A"/>
+    <path d="M 35 67 L 41 65 L 64 64 L 58 62 Z" fill="#6B6E71"/>
+
+    <path d="M 35 93 L 58 88 L 58 132 L 35 137 Z" fill="#D83936"/>
+    <path d="M 58 88 L 64 90 L 64 134 L 58 132 Z" fill="#992320"/>
+    <path d="M 35 93 L 41 91 L 64 90 L 58 88 Z" fill="#F05653"/>
+
+    <!-- Column 2 (Middle) -->
+    <path d="M 69 36 L 98 30 L 98 67 L 69 73 Z" fill="#8BB74A"/>
+    <path d="M 98 30 L 105 32 L 105 69 L 98 67 Z" fill="#5F822E"/>
+    <path d="M 69 36 L 76 34 L 105 32 L 98 30 Z" fill="#A8D65C"/>
+
+    <path d="M 69 77 L 98 71 L 98 118 L 69 124 Z" fill="#525456"/>
+    <path d="M 98 71 L 105 73 L 105 120 L 98 118 Z" fill="#36383A"/>
+    <path d="M 69 77 L 76 75 L 105 73 L 98 71 Z" fill="#6B6E71"/>
+
+    <path d="M 69 128 L 98 122 L 98 143 L 69 149 Z" fill="#D83936"/>
+    <path d="M 98 122 L 105 124 L 105 145 L 98 143 Z" fill="#992320"/>
+    <path d="M 69 128 L 76 126 L 105 124 L 98 122 Z" fill="#F05653"/>
+
+    <!-- Column 3 (Rightmost / Tallest) -->
+    <path d="M 110 26 L 138 19 L 138 80 L 110 87 Z" fill="#8BB74A"/>
+    <path d="M 138 19 L 145 21 L 145 82 L 138 80 Z" fill="#5F822E"/>
+    <path d="M 110 26 L 117 24 L 145 21 L 138 19 Z" fill="#A8D65C"/>
+
+    <path d="M 110 91 L 138 84 L 138 135 L 110 142 Z" fill="#525456"/>
+    <path d="M 138 84 L 145 86 L 145 137 L 138 135 Z" fill="#36383A"/>
+    <path d="M 110 91 L 117 89 L 145 86 L 138 84 Z" fill="#6B6E71"/>
+
+    <path d="M 110 146 L 138 139 L 138 152 L 110 159 Z" fill="#D83936"/>
+    <path d="M 138 139 L 145 141 L 145 154 L 138 152 Z" fill="#992320"/>
+    <path d="M 110 146 L 117 144 L 145 141 L 138 139 Z" fill="#F05653"/>
   </g>
-  <text x="54" y="37" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="25" font-weight="700" fill="#00A3E0">taxfiler</text>
+
+  <!-- Text "taxfiler" -->
+  <g transform="translate(170, 132)">
+    <text font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="98" font-weight="300" letter-spacing="-1">
+      <tspan fill="#85B742">tax</tspan><tspan fill="#55585A">filer</tspan>
+    </text>
+  </g>
 </svg>

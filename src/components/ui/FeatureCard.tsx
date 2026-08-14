@@ -23,7 +23,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
   return (
     <Card className={cn("h-full flex flex-col", className)}>
       <CardHeader>
-        <div className="h-14 w-14 rounded-lg bg-surface-hover border border-border flex items-center justify-center mb-6 text-accent">
+        <div className="h-14 w-14 rounded-xl bg-[#F4F0E8] border border-[#E7DED2] flex items-center justify-center mb-6 text-[#D4AF37]">
           {icon}
         </div>
         <CardTitle className="text-2xl mb-3">{title}</CardTitle>
@@ -34,7 +34,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
       </CardContent>
       {linkText && (
         <CardFooter className="pt-0 pb-8 px-8 mt-auto">
-          <Button variant="ghost" withArrow className="px-0 h-auto font-semibold">
+          <Button to={linkHref} variant="ghost" withArrow className="px-0 h-auto font-semibold">
             {linkText}
           </Button>
         </CardFooter>

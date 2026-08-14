@@ -1,7 +1,34 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 10 142 40">
-  <g>
-    <rect x="10" y="10" width="36" height="38" rx="7" fill="#E05A47"/>
-    <path d="M20 22 H34 M20 28 H34 M20 34 H26 M30 34 H34" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 200" width="100%" height="100%">
+  <g transform="translate(10, 0)">
+    <!-- Layer 1: Top Teal -->
+    <path d="M 90 20 L 150 48 L 90 70 L 30 42 Z" fill="#9CE1DC"/>
+    <path d="M 30 42 L 90 70 L 90 85 L 30 57 Z" fill="#39B2A9"/>
+    <path d="M 90 70 L 150 48 L 150 63 L 90 85 Z" fill="#75D4CE"/>
+
+    <!-- Layer 2: Orange -->
+    <path d="M 30 62 L 90 90 L 90 105 L 30 77 Z" fill="#F06227"/>
+    <path d="M 90 90 L 150 68 L 150 83 L 90 105 Z" fill="#F59265"/>
+
+    <!-- Layer 3: Purple/Magenta -->
+    <path d="M 30 82 L 90 110 L 90 125 L 30 97 Z" fill="#B83E87"/>
+    <path d="M 90 110 L 150 88 L 150 103 L 90 125 Z" fill="#CD6FA8"/>
+
+    <!-- Layer 4: Light Cyan/Blue -->
+    <path d="M 30 102 L 90 130 L 90 145 L 30 117 Z" fill="#00A3DF"/>
+    <path d="M 90 130 L 150 108 L 150 123 L 90 145 Z" fill="#61C6ED"/>
+
+    <!-- Layer 5: Pink -->
+    <path d="M 30 122 L 90 150 L 90 165 L 30 137 Z" fill="#E73B77"/>
+    <path d="M 90 150 L 150 128 L 150 143 L 90 165 Z" fill="#EF7AA4"/>
+
+    <!-- Layer 6: Deep Navy Base -->
+    <path d="M 30 142 L 90 170 L 90 195 L 30 167 Z" fill="#0E4075"/>
+    <path d="M 90 170 L 150 148 L 150 173 L 90 195 Z" fill="#092B52"/>
+    <path d="M 30 167 L 90 195 L 150 173 L 150 183 L 90 205 L 30 177 Z" fill="#061C3B"/>
   </g>
-  <text x="54" y="37" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="26" font-weight="800" fill="#0B1D38">Tax<tspan fill="#E05A47">Calc</tspan></text>
+
+  <!-- Text "taxcalc®" -->
+  <g transform="translate(175, 155)">
+    <text font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="94" font-weight="800" fill="#333333" letter-spacing="-2">taxcalc<tspan font-size="28" font-weight="600" dx="2" dy="-42">®</tspan></text>
+  </g>
 </svg>

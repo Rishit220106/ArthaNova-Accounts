@@ -25,12 +25,19 @@ export const sendContactNotification = async (contact) => {
     }
 
     const resend = new Resend(RESEND_API_KEY);
-    const { name, email, company, country, message, createdAt } = contact;
+    const { name, email, company, country, services, service, message, createdAt } = contact;
     
     const formattedDate = new Date(createdAt).toLocaleString('en-IN', {
       dateStyle: 'medium',
       timeStyle: 'short'
     });
+
+    let servicesDisplay = 'N/A';
+    if (Array.isArray(services) && services.length > 0) {
+      servicesDisplay = services.join(', ');
+    } else if (service) {
+      servicesDisplay = service;
+    }
     
     const textContent = `
 New Contact Form Submission
@@ -47,6 +54,9 @@ ${company || 'N/A'}
 Country:
 ${country || 'N/A'}
 
+Services Required:
+${servicesDisplay}
+
 Message:
 ${message}
 
@@ -58,6 +68,7 @@ ${formattedDate}
     const safeEmail = escapeHtml(email);
     const safeCompany = escapeHtml(company) || 'N/A';
     const safeCountry = escapeHtml(country) || 'N/A';
+    const safeServices = escapeHtml(servicesDisplay);
     const safeMessage = escapeHtml(message);
 
     const htmlContent = `
@@ -69,7 +80,7 @@ ${formattedDate}
           <div style="padding: 30px;">
             <table style="width: 100%; border-collapse: collapse;">
               <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb; width: 30%; font-weight: bold; color: #4b5563;">Name:</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb; width: 35%; font-weight: bold; color: #4b5563;">Name:</td>
                 <td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;">${safeName}</td>
               </tr>
               <tr>
@@ -85,6 +96,10 @@ ${formattedDate}
                 <td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;">${safeCountry}</td>
               </tr>
               <tr>
+                <td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb; font-weight: bold; color: #4b5563;">Services Required:</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;">${safeServices}</td>
+              </tr>
+              <tr>
                 <td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb; font-weight: bold; color: #4b5563;">Submitted At:</td>
                 <td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;">${formattedDate}</td>
               </tr>
@@ -98,7 +113,7 @@ ${formattedDate}
       </div>
     `;
 
-    const senderString = FROM_EMAIL.includes('<') ? FROM_EMAIL : `ArthaNovAccounts <${FROM_EMAIL}>`;
+    const senderString = FROM_EMAIL.includes('<') ? FROM_EMAIL : `ArthaNova Accounts <${FROM_EMAIL}>`;
 
     const { data, error } = await resend.emails.send({
       from: senderString,

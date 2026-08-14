@@ -1,7 +1,7 @@
 {
   "name": "arthanovaccounts-backend",
   "version": "1.0.0",
-  "description": "Backend foundation for ArthaNovaccounts",
+  "description": "Backend foundation for ArthaNova Accounts",
   "main": "src/server.js",
   "type": "module",
   "scripts": {

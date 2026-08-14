@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, useInView, useMotionValue, useTransform, animate } from 'motion/react';
 import { Button } from './Button';
 import { Link } from 'react-router-dom';
-import { Globe, ArrowRight, CheckCircle2, MapPin, Check } from 'lucide-react';
+import { Globe, ArrowRight, CheckCircle2, Check, Quote, Users, Award, ShieldCheck } from 'lucide-react';
 
 const CountUp = ({ end, suffix = '', duration = 2, isString = false, stringVal = "" }: any) => {
   const count = useMotionValue(0);
@@ -24,23 +24,36 @@ const CountUp = ({ end, suffix = '', duration = 2, isString = false, stringVal =
   return <motion.span ref={ref}>{text}</motion.span>;
 };
 
-const StatItem = ({ value, suffix, label, delay }) => (
+const StatItem = ({ icon: Icon, value, suffix, label, delay }: any) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "-50px" }}
-    transition={{ duration: 0.2, delay }}
-    className="flex flex-col items-center lg:items-start text-center lg:text-left"
+    transition={{ duration: 0.3, delay }}
+    className="group relative bg-gradient-to-br from-[#132B57] via-[#10254A] to-[#0D1D3A] rounded-[22px] p-5 border border-[#D4AF37]/35 shadow-[0_10px_30px_rgba(16,37,74,0.14)] hover:border-[#D4AF37] hover:shadow-[0_18px_40px_rgba(16,37,74,0.25)] hover:-translate-y-1 transition-all duration-300 overflow-hidden flex items-center gap-4 text-left"
   >
-    <div className="text-xl sm:text-2xl lg:text-3xl font-serif text-[#07162D] mb-1 group-hover:text-[#D4AF37] transition-colors">
-      {typeof value === 'number' ? <CountUp end={value} suffix={suffix} /> : <span>{value}{suffix}</span>}
+    {/* Top edge inner gold line */}
+    <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent group-hover:via-[#D4AF37]/80 transition-all duration-300" />
+
+    {/* Micro Accent Gold Dot */}
+    <div className="absolute top-4 right-4 w-1.5 h-1.5 rounded-full bg-[#D4AF37]/50 group-hover:bg-[#D4AF37] group-hover:scale-125 transition-all duration-300 shadow-[0_0_6px_rgba(212,175,55,0.6)]" />
+
+    <div className="w-11 h-11 rounded-full bg-[#10254A] border border-[#D4AF37]/40 shadow-sm flex items-center justify-center shrink-0 group-hover:border-[#D4AF37] group-hover:bg-[#D4AF37]/20 transition-all duration-300">
+      <Icon className="w-5 h-5 text-[#D4AF37]" strokeWidth={1.5} />
     </div>
-    <div className="text-[10px] sm:text-[11px] font-bold tracking-wider text-[#07162D]/60 uppercase">{label}</div>
+    <div>
+      <div className="text-base sm:text-lg lg:text-xl font-serif font-bold text-white leading-tight group-hover:text-[#F8F5EE] transition-colors">
+        {typeof value === 'number' ? <CountUp end={value} suffix={suffix} /> : <span>{value}{suffix}</span>}
+      </div>
+      <div className="text-[10px] sm:text-[11px] font-bold tracking-wider text-[#D4AF37] uppercase pt-0.5">
+        {label}
+      </div>
+    </div>
   </motion.div>
 );
 
 const UKFlag = () => (
-  <svg className="w-5 h-3.5 rounded-[2px] shadow-sm shrink-0 border border-[#07162D]/15 inline-block align-middle" viewBox="0 0 600 300">
+  <svg className="w-5 h-3.5 rounded-[2px] shadow-sm shrink-0 border border-white/20 inline-block align-middle" viewBox="0 0 600 300">
     <clipPath id="uk-clip-gp">
       <rect width="600" height="300" />
     </clipPath>
@@ -55,7 +68,7 @@ const UKFlag = () => (
 );
 
 const USFlag = () => (
-  <svg className="w-5 h-3.5 rounded-[2px] shadow-sm shrink-0 border border-[#07162D]/15 inline-block align-middle" viewBox="0 0 741 390">
+  <svg className="w-5 h-3.5 rounded-[2px] shadow-sm shrink-0 border border-white/20 inline-block align-middle" viewBox="0 0 741 390">
     <rect width="741" height="390" fill="#b22234" />
     <path d="M0,30H741M0,90H741M0,150H741M0,210H741M0,270H741M0,330H741" stroke="#fff" strokeWidth="30" />
     <rect width="296.4" height="210" fill="#3c3b6e" />
@@ -72,7 +85,7 @@ const USFlag = () => (
 );
 
 const AUFlag = () => (
-  <svg className="w-5 h-3.5 rounded-[2px] shadow-sm shrink-0 border border-[#07162D]/15 inline-block align-middle" viewBox="0 0 1200 600">
+  <svg className="w-5 h-3.5 rounded-[2px] shadow-sm shrink-0 border border-white/20 inline-block align-middle" viewBox="0 0 1200 600">
     <rect width="1200" height="600" fill="#00008B" />
     <g transform="scale(0.5)">
       <rect width="1200" height="600" fill="#012169" />
@@ -92,30 +105,37 @@ const AUFlag = () => (
 
 const FloatingCard = ({ title, flag, items, position, delay = 0 }: any) => (
   <motion.div
-    initial={{ opacity: 0, scale: 0.9 }}
+    initial={{ opacity: 0, scale: 0.95 }}
     whileInView={{ opacity: 1, scale: 1 }}
     viewport={{ once: true, margin: "-50px" }}
     animate={{
-      y: [0, -10, 0],
-      x: [0, 5, 0]
+      y: [0, -6, 0],
+      x: [0, 3, 0]
     }}
     transition={{
-      default: { duration: 0.2, delay },
-      y: { duration: 6, repeat: Infinity, ease: "easeInOut", delay },
-      x: { duration: 8, repeat: Infinity, ease: "easeInOut", delay }
+      default: { duration: 0.3, delay },
+      y: { duration: 5 + delay * 2, repeat: Infinity, ease: "easeInOut", delay },
+      x: { duration: 7 + delay * 2, repeat: Infinity, ease: "easeInOut", delay }
     }}
-    className={`absolute ${position} z-20 w-52 bg-white/70 backdrop-blur-xl border border-[#07162D]/5 rounded-2xl p-4 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.08)] hidden md:block hover:shadow-[0_25px_50px_-12px_rgba(212,175,55,0.15)] hover:border-[#D4AF37]/30 hover:-translate-y-1.5 transition-all duration-200 group`}
+    className={`absolute ${position} z-20 w-52 sm:w-56 bg-white rounded-[24px] border border-[#D4AF37]/35 shadow-[0_12px_35px_rgba(16,37,74,0.08)] hover:shadow-[0_20px_45px_rgba(16,37,74,0.16)] hover:border-[#D4AF37] hover:-translate-y-2 transition-all duration-300 group overflow-hidden hidden md:block`}
   >
-    <div className="flex items-center gap-2 mb-3">
-      <div className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse shrink-0" />
-      {flag && <div className="flex items-center shrink-0">{flag}</div>}
-      <span className="text-sm font-bold text-[#07162D] tracking-wide group-hover:text-[#D4AF37] transition-colors">{title}</span>
+    {/* Dark Navy Header Strip */}
+    <div className="bg-[#10254A] px-4 py-2.5 flex items-center justify-between border-b border-[#D4AF37]/30">
+      <div className="flex items-center gap-2">
+        {flag && <div className="flex items-center shrink-0">{flag}</div>}
+        <span className="text-xs font-bold text-white tracking-wide group-hover:text-[#F8F5EE] transition-colors">{title}</span>
+      </div>
+      <div className="w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_8px_rgba(212,175,55,0.8)] animate-pulse" />
     </div>
-    <div className="space-y-2">
+
+    {/* Body with Checkmarks */}
+    <div className="p-3.5 bg-white space-y-2">
       {items.map((item: string, i: number) => (
-        <div key={i} className="flex items-center gap-2">
-          <Check className="w-3 h-3 text-[#D4AF37]" />
-          <span className="text-xs text-[#07162D]/70 font-medium">{item}</span>
+        <div key={i} className="flex items-center gap-2 text-xs">
+          <div className="w-4 h-4 rounded-full bg-[#D4AF37]/15 flex items-center justify-center shrink-0">
+            <Check className="w-2.5 h-2.5 text-[#D4AF37]" strokeWidth={2.5} />
+          </div>
+          <span className="text-[#10254A]/80 font-medium">{item}</span>
         </div>
       ))}
     </div>
@@ -124,200 +144,270 @@ const FloatingCard = ({ title, flag, items, position, delay = 0 }: any) => (
 
 export const GlobalPresence = () => {
   return (
-    <section className="py-12 md:py-24 lg:py-32 relative overflow-hidden bg-[#F7F3EA]">
-      {/* Light Theme Background Effects */}
-      <div className="absolute inset-0 bg-[url('/stardust.png')] opacity-[0.03] pointer-events-none" />
+    <section className="py-16 md:py-28 lg:py-36 relative overflow-hidden bg-[#FAF9F5]">
+      {/* Subtle Background Blueprint Lines & Pattern (Opacity < 6%) */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(16,37,74,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(16,37,74,0.03)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,#000_60%,transparent_100%)] pointer-events-none" />
 
-      {/* Soft mesh gradients & glows for Light Theme */}
-      <div className="absolute top-0 right-0 w-[400px] lg:w-[800px] h-[400px] lg:h-[800px] bg-[#D4AF37]/10 rounded-full filter blur-[100px] lg:blur-[150px] translate-x-1/3 -translate-y-1/3 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[300px] lg:w-[600px] h-[300px] lg:h-[600px] bg-[#D4AF37]/15 rounded-full filter blur-[80px] lg:blur-[120px] -translate-x-1/2 translate-y-1/2 pointer-events-none" />
+      {/* Faint stardust texture overlay */}
+      <div className="absolute inset-0 opacity-[0.015] bg-[url('/stardust.png')] pointer-events-none" />
 
-      {/* Minimal star-like particles (adapted for light theme) */}
-      <div className="absolute top-20 left-20 w-1 h-1 bg-[#D4AF37] rounded-full opacity-40 blur-[1px] animate-pulse" />
-      <div className="absolute bottom-40 right-1/4 w-1.5 h-1.5 bg-[#D4AF37] rounded-full opacity-30 blur-[2px]" />
-      <div className="absolute top-1/3 right-20 w-1 h-1 bg-[#D4AF37] rounded-full opacity-50 blur-[1px] animate-pulse" />
+      {/* Very subtle warm radial glow behind center (opacity < 6%) */}
+      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.05)_0%,transparent_70%)] pointer-events-none blur-3xl" />
+      
+      {/* Additional ambient lighting */}
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.04)_0%,transparent_70%)] pointer-events-none blur-3xl" />
 
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10">
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-8">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-center">
 
-          {/* Left Column: Editorial & Stats (45%) */}
-          <div className="w-full lg:w-[45%] flex flex-col justify-center items-center lg:items-start text-center lg:text-left order-2 lg:order-1">
+          {/* Left Column: Editorial Content (45%) */}
+          <div className="w-full lg:w-[45%] flex flex-col justify-center items-start text-left order-1">
+            {/* Eyebrow Label */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.2 }}
-              className="inline-block px-3 py-1 lg:px-4 lg:py-1.5 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#07162D] font-bold tracking-[0.2em] uppercase text-[9px] lg:text-[10px] mb-4 lg:mb-8 shadow-premium backdrop-blur-sm"
+              transition={{ duration: 0.3 }}
+              className="text-xs text-[#D4AF37] font-bold tracking-[0.22em] uppercase mb-4 flex items-center gap-2"
             >
-              International Expertise
+              <span className="w-6 h-[1.5px] bg-[#D4AF37]" />
+              INTERNATIONAL EXPERTISE
             </motion.div>
 
+            {/* Heading */}
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.2, delay: 0.1 }}
-              className="text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl font-serif text-[#07162D] mb-4 lg:mb-6 leading-[1.15] tracking-tight text-balance w-[95%] lg:w-full mx-auto lg:mx-0"
+              transition={{ duration: 0.3, delay: 0.1 }}
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-serif text-[#10254A] mb-4 sm:mb-6 leading-[1.18] tracking-tight"
             >
-              Supporting Businesses Across Global Financial Markets
+              Supporting Businesses Across{' '}
+              <span className="text-[#D4AF37] font-serif italic font-normal">
+                Global Financial Markets
+              </span>
             </motion.h2>
 
+            {/* Description */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.2, delay: 0.2 }}
-              className="text-[15px] sm:text-lg md:text-xl text-[#07162D]/70 font-sans leading-relaxed mb-6 lg:mb-12 font-medium max-w-[90%] sm:max-w-xl mx-auto lg:mx-0"
+              transition={{ duration: 0.3, delay: 0.2 }}
+              className="text-base sm:text-lg text-[#667085] font-sans leading-relaxed mb-6 sm:mb-8 font-normal max-w-xl"
             >
               We help accounting firms and businesses navigate international compliance, bookkeeping, payroll and tax requirements with specialized expertise across multiple jurisdictions.
             </motion.p>
 
-            {/* Statistics Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-y-6 lg:gap-y-10 gap-x-4 lg:gap-x-6 mb-6 lg:mb-12 border-t border-[#07162D]/10 pt-6 lg:pt-10 w-full group">
-              <StatItem value="Founder-Led" suffix="" label="Expertise" delay={0.3} />
-              <StatItem value="ACCA & CA" suffix="" label="Certified Professionals" delay={0.4} />
-              <StatItem value={3} suffix="" label="Global Jurisdictions" delay={0.5} />
-              <StatItem value="Cross-Border" suffix="" label="Compliance" delay={0.6} />
-              <StatItem value="Precision" suffix="" label="Driven Services" delay={0.7} />
-            </div>
-
-            {/* Trust Callout */}
+            {/* Mobile Compact Global Presence Card (<=768px Only) */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.2, delay: 0.8 }}
-              className="bg-white/50 backdrop-blur-xl border border-[#07162D]/10 rounded-2xl p-5 lg:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_-10px_rgba(212,175,55,0.15)] hover:-translate-y-1.5 transition-all duration-200 mb-6 lg:mb-12 w-full max-w-[95%] lg:max-w-none mx-auto lg:mx-0"
+              viewport={{ once: true }}
+              transition={{ duration: 0.3 }}
+              className="w-full bg-gradient-to-br from-[#132B57] via-[#10254A] to-[#0D1D3A] rounded-[22px] p-5 sm:p-6 border border-[#D4AF37]/35 shadow-[0_12px_35px_rgba(16,37,74,0.18)] my-5 relative overflow-hidden md:hidden"
             >
-              <p className="text-[#07162D]/80 font-serif text-[15px] lg:text-lg leading-relaxed italic">
-                "Delivering internationally compliant accounting solutions with local expertise and global standards."
-              </p>
+              {/* Top edge inner gold line */}
+              <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/60 to-transparent" />
+              
+              {/* Micro Accent Gold Dot */}
+              <div className="absolute top-4 right-4 w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
+
+              {/* Card Header */}
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-9 h-9 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/35 flex items-center justify-center shrink-0">
+                  <Globe className="w-4.5 h-4.5 text-[#D4AF37]" strokeWidth={1.5} />
+                </div>
+                <h3 className="font-serif text-white font-bold text-xl sm:text-2xl tracking-tight">
+                  Global Presence
+                </h3>
+              </div>
+
+              <div className="w-10 h-[2px] bg-[#D4AF37]/60 mb-4 rounded-full" />
+
+              {/* 3 Compact Country Rows */}
+              <div className="space-y-3">
+                {/* Row 1: UK */}
+                <div className="flex items-center justify-between py-2 border-b border-white/10">
+                  <div className="flex items-center gap-2.5">
+                    <UKFlag />
+                    <span className="text-white font-semibold text-sm font-sans">United Kingdom</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-[#D4AF37] bg-[#D4AF37]/15 border border-[#D4AF37]/40 px-2.5 py-0.5 rounded-full flex items-center gap-1 shrink-0">
+                    <Check className="w-3 h-3 text-[#D4AF37]" /> Operational
+                  </span>
+                </div>
+
+                {/* Row 2: US */}
+                <div className="flex items-center justify-between py-2 border-b border-white/10">
+                  <div className="flex items-center gap-2.5">
+                    <USFlag />
+                    <span className="text-white font-semibold text-sm font-sans">United States</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-[#D4AF37] bg-[#D4AF37]/15 border border-[#D4AF37]/40 px-2.5 py-0.5 rounded-full flex items-center gap-1 shrink-0">
+                    <Check className="w-3 h-3 text-[#D4AF37]" /> Operational
+                  </span>
+                </div>
+
+                {/* Row 3: AU */}
+                <div className="flex items-center justify-between py-2">
+                  <div className="flex items-center gap-2.5">
+                    <AUFlag />
+                    <span className="text-white font-semibold text-sm font-sans">Australia</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-[#D4AF37] bg-[#D4AF37]/15 border border-[#D4AF37]/40 px-2.5 py-0.5 rounded-full flex items-center gap-1 shrink-0">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" /> Launching Soon
+                  </span>
+                </div>
+              </div>
             </motion.div>
 
-            {/* CTA */}
+            {/* Statistics Feature Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-8 border-t border-[#10254A]/10 pt-6 w-full">
+              <StatItem icon={Users} value="Professional" suffix="" label="Expertise" delay={0.3} />
+              <StatItem icon={Award} value="ACCA & CA" suffix="" label="Certified Professionals" delay={0.4} />
+              <StatItem icon={Globe} value={3} suffix=" Jurisdictions" label="UK, US & Australia" delay={0.5} />
+              <StatItem icon={ShieldCheck} value="Cross-Border" suffix="" label="Compliance" delay={0.6} />
+            </div>
+
+            {/* Redesigned Quote Card */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.2, delay: 0.9 }}
-              className="flex flex-col items-center lg:items-start lg:flex-row gap-4 lg:gap-6 w-full"
+              transition={{ duration: 0.3, delay: 0.7 }}
+              className="bg-white rounded-2xl p-5 sm:p-6 border border-[#E7DED2] border-t-2 border-t-[#D4AF37] shadow-[0_8px_30px_rgba(16,37,74,0.04)] hover:shadow-[0_15px_35px_rgba(16,37,74,0.08)] transition-all duration-300 mb-8 w-full"
             >
-              <Button to="/jurisdictions" variant="primary">
+              <div className="flex items-start gap-3.5">
+                <Quote className="w-6 h-6 text-[#D4AF37] shrink-0 rotate-180" strokeWidth={1.5} />
+                <p className="text-[#10254A] font-serif text-sm sm:text-base leading-relaxed italic font-medium">
+                  "Delivering internationally compliant accounting solutions with local expertise and global standards."
+                </p>
+              </div>
+            </motion.div>
+
+            {/* CTA Button */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.3, delay: 0.8 }}
+              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full"
+            >
+              <Button to="/jurisdictions" variant="primary" className="bg-[#10254A] text-white hover:bg-[#10254A]/90 hover:-translate-y-0.5 transition-all shadow-[0_4px_15px_rgba(16,37,74,0.15)] flex items-center justify-center">
                 Explore Jurisdictions
+                <ArrowRight className="w-4 h-4 ml-2 text-[#D4AF37]" />
               </Button>
-              <p className="hidden lg:block text-sm text-[#07162D]/70 leading-relaxed max-w-xs font-medium">
+              <p className="hidden sm:block text-xs text-[#667085] leading-relaxed max-w-xs font-medium">
                 Discover how our international expertise supports your business across multiple financial ecosystems.
               </p>
             </motion.div>
           </div>
 
-          {/* Right Column: Globe Visualization (55%) */}
-          <div className="w-full lg:w-[55%] relative h-[280px] sm:h-[350px] md:h-[500px] lg:min-h-full flex items-center justify-center order-1 lg:order-2 overflow-hidden lg:overflow-visible">
-            {/* The Globe Canvas Container */}
+          {/* Right Column: Desktop World Network Visualization (55% - Hidden on Mobile) */}
+          <div className="w-full lg:w-[55%] relative h-[420px] sm:h-[520px] md:h-[600px] hidden md:flex items-center justify-center order-2 overflow-hidden lg:overflow-visible">
+            
+            {/* Network Canvas Container */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 1.2, ease: "easeOut" }}
-              className="relative w-[700px] h-[700px] flex items-center justify-center scale-[0.4] sm:scale-[0.5] md:scale-[0.7] lg:scale-100 origin-center flex-shrink-0"
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="relative w-[650px] h-[650px] flex items-center justify-center scale-[0.55] sm:scale-[0.75] md:scale-[0.9] lg:scale-100 origin-center flex-shrink-0"
             >
-              {/* Core Globe Glow (Light Theme) */}
-              <div className="absolute inset-10 bg-[#D4AF37]/10 rounded-full filter blur-[80px]" />
-              <div className="absolute inset-20 bg-[#D4AF37]/10 rounded-full filter blur-[60px]" />
+              {/* Soft central radial glow */}
+              <div className="absolute inset-20 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.08)_0%,transparent_70%)] rounded-full blur-2xl pointer-events-none" />
 
-              {/* Abstract Globe (CSS representation) */}
-              <div className="absolute inset-8 rounded-full border border-[#07162D]/10 border-dashed animate-[spin_120s_linear_infinite]" />
-              <div className="absolute inset-16 rounded-full border border-[#07162D]/10 animate-[spin_80s_linear_infinite_reverse]" />
+              {/* Faint Dotted Orbital Circles */}
+              <div className="absolute inset-10 rounded-full border border-[#D4AF37]/20 border-dashed animate-[spin_160s_linear_infinite]" />
+              <div className="absolute inset-24 rounded-full border border-[#10254A]/10 animate-[spin_120s_linear_infinite_reverse]" />
+              <div className="absolute inset-36 rounded-full border border-[#D4AF37]/15 border-dashed" />
 
-              {/* Latitude/Longitude grid lines abstract */}
-              <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-[#07162D]/10 to-transparent top-1/2 -translate-y-1/2" />
-              <div className="absolute h-full w-[1px] bg-gradient-to-b from-transparent via-[#07162D]/10 to-transparent left-1/2 -translate-x-1/2" />
-              <div className="absolute w-[70%] h-[70%] rounded-full border border-[#07162D]/5 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45 transform-gpu" style={{ transformStyle: 'preserve-3d', transform: 'translate(-50%, -50%) rotateX(60deg) rotateZ(45deg)' }} />
+              {/* Abstract Latitude/Longitude Lines */}
+              <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-[#10254A]/10 to-transparent top-1/2 -translate-y-1/2" />
+              <div className="absolute h-full w-[1px] bg-gradient-to-b from-transparent via-[#10254A]/10 to-transparent left-1/2 -translate-x-1/2" />
+              <div className="absolute w-[68%] h-[68%] rounded-full border border-[#10254A]/5 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45 transform-gpu" style={{ transformStyle: 'preserve-3d', transform: 'translate(-50%, -50%) rotateX(60deg) rotateZ(45deg)' }} />
 
-              {/* Glowing core */}
-              <Globe className="w-32 h-32 text-[#D4AF37]/40 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" strokeWidth={1} />
+              {/* Central Global Accounting Hub Center Badge */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
+                <div className="relative flex items-center justify-center">
+                  <div className="absolute inset-[-14px] rounded-full border border-[#D4AF37]/35 animate-ping opacity-30" style={{ animationDuration: '3s' }} />
+                  <div className="absolute inset-[-6px] rounded-full border border-[#D4AF37]/50" />
+                  <div className="w-16 h-16 rounded-full bg-[#10254A] border-2 border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.35)] flex items-center justify-center">
+                    <Globe className="w-8 h-8 text-[#D4AF37] animate-pulse" strokeWidth={1.5} />
+                  </div>
+                </div>
+              </div>
 
-              {/* Central Connection Lines (SVG) */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" style={{ filter: 'drop-shadow(0 0 4px rgba(212,175,55,0.3))' }}>
+              {/* Curved Connection Lines from Country Cards to Center Hub */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none z-10">
                 <motion.path
-                  d="M 25% 35% Q 50% 20% 65% 40%"
+                  d="M 160 160 Q 240 220 325 325"
                   fill="none"
-                  stroke="rgba(212,175,55,0.6)"
-                  strokeWidth="2"
+                  stroke="rgba(212,175,55,0.5)"
+                  strokeWidth="1.5"
                   strokeDasharray="4 4"
                   initial={{ pathLength: 0 }}
                   whileInView={{ pathLength: 1 }}
-                  transition={{ duration: 2, delay: 1 }}
+                  transition={{ duration: 1.8, delay: 0.4 }}
                 />
                 <motion.path
-                  d="M 65% 40% Q 80% 50% 75% 75%"
+                  d="M 490 140 Q 420 210 325 325"
                   fill="none"
-                  stroke="rgba(212,175,55,0.6)"
-                  strokeWidth="2"
+                  stroke="rgba(212,175,55,0.5)"
+                  strokeWidth="1.5"
                   strokeDasharray="4 4"
                   initial={{ pathLength: 0 }}
                   whileInView={{ pathLength: 1 }}
-                  transition={{ duration: 2, delay: 1.5 }}
+                  transition={{ duration: 1.8, delay: 0.6 }}
+                />
+                <motion.path
+                  d="M 480 490 Q 410 420 325 325"
+                  fill="none"
+                  stroke="rgba(212,175,55,0.5)"
+                  strokeWidth="1.5"
+                  strokeDasharray="4 4"
+                  initial={{ pathLength: 0 }}
+                  whileInView={{ pathLength: 1 }}
+                  transition={{ duration: 1.8, delay: 0.8 }}
                 />
               </svg>
 
-              {/* Markers & Floating Cards */}
+              {/* Small Gold Network Nodes */}
+              <div className="absolute top-[28%] left-[26%] w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_8px_#D4AF37] animate-pulse" />
+              <div className="absolute top-[24%] left-[72%] w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_8px_#D4AF37] animate-pulse" />
+              <div className="absolute top-[72%] left-[70%] w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_8px_#D4AF37] animate-pulse" />
 
-              {/* UK Marker & Card */}
-              <div className="absolute top-[35%] left-[60%] md:left-[65%] z-30">
-                <div className="relative">
-                  <div className="w-4 h-4 bg-[#D4AF37] rounded-full shadow-[0_0_15px_#D4AF37] animate-pulse" />
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 border border-[#D4AF37]/40 rounded-full animate-ping" />
-                </div>
-              </div>
-              <FloatingCard
-                title="United Kingdom"
-                flag={<UKFlag />}
-                items={["Statutory Accounts", "Corporation Tax", "Payroll", "HMRC Compliance"]}
-                position="top-[5%] left-[65%] md:left-[70%]"
-                delay={0.2}
-              />
-
-              {/* US Marker & Card */}
-              <div className="absolute top-[45%] left-[20%] md:left-[25%] z-30">
-                <div className="relative">
-                  <div className="w-4 h-4 bg-[#D4AF37] rounded-full shadow-[0_0_15px_#D4AF37] animate-pulse" />
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 border border-[#D4AF37]/40 rounded-full animate-ping" style={{ animationDelay: '1s' }} />
-                </div>
-              </div>
+              {/* Country Cards */}
               <FloatingCard
                 title="United States"
                 flag={<USFlag />}
                 items={["Bookkeeping", "Financial Reporting", "Payroll", "Tax Preparation"]}
-                position="top-[15%] left-[0%] md:-left-[5%]"
+                position="top-[8%] left-[2%]"
+                delay={0.2}
+              />
+
+              <FloatingCard
+                title="United Kingdom"
+                flag={<UKFlag />}
+                items={["Statutory Accounts", "Corporation Tax", "Payroll", "HMRC Compliance"]}
+                position="top-[5%] left-[58%]"
                 delay={0.4}
               />
 
-              {/* Australia Marker & Card */}
-              <div className="absolute top-[75%] left-[75%] z-30">
-                <div className="relative">
-                  <div className="w-3 h-3 bg-[#D4AF37] rounded-full shadow-[0_0_10px_#D4AF37] opacity-70" />
-                </div>
-              </div>
               <FloatingCard
                 title="Australia"
                 flag={<AUFlag />}
-                items={["Cloud Accounting", "Bookkeeping"]}
-                position="top-[80%] left-[65%]"
+                items={["Cloud Accounting", "Bookkeeping", "BAS Compliance"]}
+                position="top-[70%] left-[56%]"
                 delay={0.6}
               />
-
-              {/* Europe Marker */}
-              <div className="absolute top-[40%] left-[68%] z-30">
-                <div className="relative">
-                  <div className="w-2.5 h-2.5 bg-[#D4AF37] rounded-full shadow-[0_0_10px_#D4AF37] opacity-60" />
-                </div>
-              </div>
 
             </motion.div>
           </div>
 
         </div>
+
       </div>
     </section>
   );

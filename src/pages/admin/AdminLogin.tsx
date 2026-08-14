@@ -280,7 +280,7 @@ const TeddyMascotSection = () => {
         <h3 className="text-base sm:text-lg font-extrabold text-white tracking-tight">
           Welcome to{' '}
           <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-pink-400 bg-clip-text text-transparent">
-            ArthaNovaccounts
+            ArthaNova Accounts
           </span>{' '}
           Admin Portal
         </h3>
@@ -396,7 +396,7 @@ export const AdminLogin: React.FC = () => {
               <Building2 className="w-6 h-6 text-white" />
             </motion.div>
             <div>
-              <h1 className="text-lg font-extrabold tracking-wider text-white">ArthaNovaccounts</h1>
+              <h1 className="text-lg font-extrabold tracking-wider text-white">ArthaNova Accounts</h1>
               <p className="text-[10px] uppercase tracking-widest text-blue-400 font-bold">
                 Tax & Corporate Advisory
               </p>

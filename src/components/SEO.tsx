@@ -20,13 +20,13 @@ export const SEO: React.FC<SEOProps> = ({
 }) => {
   const siteUrl = 'https://arthanovaaccounts.com';
   const fullUrl = `${siteUrl}${canonical}`;
-  const siteName = 'ArthaNovaccounts';
-  const pageTitle = "ArthaNovaccounts | International Accounting & Tax Advisory";
+  const siteName = 'ArthaNova Accounts';
+  const pageTitle = "ArthaNova Accounts | International Accounting & Tax Advisory";
 
   const defaultWebsiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "ArthaNovaccounts",
+    "name": "ArthaNova Accounts",
     "url": "https://arthanovaaccounts.com",
     "description": "Professional UK, US & Australia Accounting, Bookkeeping, Payroll & Tax Advisory Services."
   };
@@ -45,8 +45,8 @@ export const SEO: React.FC<SEOProps> = ({
   return (
     <Helmet>
       <title>{pageTitle}</title>
-      <meta name="application-name" content="ArthaNovaccounts" />
-      <meta name="apple-mobile-web-app-title" content="ArthaNovaccounts" />
+      <meta name="application-name" content="ArthaNova Accounts" />
+      <meta name="apple-mobile-web-app-title" content="ArthaNova Accounts" />
       <meta name="description" content={description} />
       <link rel="canonical" href={fullUrl} />
 
