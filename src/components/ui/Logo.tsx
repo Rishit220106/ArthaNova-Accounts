@@ -15,14 +15,13 @@ export const Logo: React.FC<LogoProps> = ({ className, variant = 'dark', ...prop
         aria-hidden="true"
         className="h-10 w-10 sm:h-12 sm:w-12 lg:h-14 lg:w-14 flex-shrink-0 object-contain scale-[1.15] origin-center"
       />
-      <span className={cn(
-        "ml-3 sm:ml-4 lg:ml-5 font-serif font-semibold tracking-wide",
-        "text-xl sm:text-2xl lg:text-3xl",
+      <div className={cn(
+        "ml-3 sm:ml-4 lg:ml-5 font-serif flex items-baseline gap-[0.28em] whitespace-nowrap select-none",
         variant === 'light' ? "text-white" : "text-[#10254A]"
       )}>
-        <span className="hidden min-[360px]:inline">ArthaNova Accounts</span>
-        <span className="inline min-[360px]:hidden leading-tight block">ArthaNova<br />Accounts</span>
-      </span>
+        <span className="font-semibold tracking-wide text-xl sm:text-2xl lg:text-3xl">ArthaNova</span>
+        <span className="font-medium tracking-wide text-[1.1em]">Accounts</span>
+      </div>
     </div>
   );
 };
