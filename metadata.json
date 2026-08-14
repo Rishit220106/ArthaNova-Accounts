@@ -1,6 +1,6 @@
 {
-  "name": "ArthaNovaccounts Design System",
-  "description": "Premium design language and component library for international accounting firm ArthaNovaccounts.",
+  "name": "ArthaNova Accounts Design System",
+  "description": "Premium design language and component library for international accounting firm ArthaNova Accounts.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

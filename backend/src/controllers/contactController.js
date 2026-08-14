@@ -6,13 +6,26 @@ import { sendContactNotification } from '../services/emailService.js';
 // @route   POST /api/contact
 // @access  Public
 export const createContact = asyncHandler(async (req, res, next) => {
-  const { name, email, company, country, message } = req.body;
+  const { name, email, company, country, services, service, message } = req.body;
+
+  let serviceList = [];
+  if (Array.isArray(services) && services.length > 0) {
+    serviceList = services;
+  } else if (typeof service === 'string' && service.trim()) {
+    serviceList = [service.trim()];
+  } else if (Array.isArray(service)) {
+    serviceList = service;
+  }
+
+  const primaryServiceStr = serviceList.join(' · ');
 
   const newContact = await Contact.create({
     name,
     email,
     company,
     country,
+    services: serviceList,
+    service: primaryServiceStr,
     message
   });
 

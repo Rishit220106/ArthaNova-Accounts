@@ -236,6 +236,25 @@ export const AdminContactDetail: React.FC = () => {
                 </div>
               </div>
 
+              {/* Services Required */}
+              <div className="space-y-1 sm:col-span-2">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Services Required</span>
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {contact.services && contact.services.length > 0 ? (
+                    contact.services.map((srv, idx) => (
+                      <span
+                        key={idx}
+                        className="px-3 py-1 bg-blue-500/15 border border-blue-400/30 text-blue-300 rounded-full text-xs font-semibold"
+                      >
+                        {srv}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-sm font-semibold text-slate-200">{contact.service || 'N/A'}</span>
+                  )}
+                </div>
+              </div>
+
               {/* Created Date */}
               <div className="space-y-1">
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Submission Date</span>

@@ -64,7 +64,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               </div>
               <div>
                 <h1 className="text-sm font-bold text-white tracking-wider flex items-center gap-1.5">
-                  ArthaNovaccounts
+                  ArthaNova Accounts
                   <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-gradient-to-r from-blue-500/30 to-pink-500/30 text-amber-300 font-mono border border-amber-400/20">PRO</span>
                 </h1>
                 <p className="text-[10px] uppercase tracking-widest text-blue-400 font-semibold mt-0.5">

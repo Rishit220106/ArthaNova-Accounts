@@ -6,6 +6,7 @@ export interface Contact {
   company: string;
   country: string;
   service?: string;
+  services?: string[];
   message: string;
   status: 'New' | 'Contacted' | 'In Progress' | 'Closed';
   createdDate: string;

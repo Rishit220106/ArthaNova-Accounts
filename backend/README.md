@@ -1,6 +1,6 @@
-# ArthaNovaccounts Backend
+# ArthaNova Accounts Backend
 
-Production-ready backend foundation for ArthaNovaccounts. Built with Node.js, Express, and MongoDB.
+Production-ready backend foundation for ArthaNova Accounts. Built with Node.js, Express, and MongoDB.
 
 ## Folder Structure
 

@@ -24,6 +24,14 @@ const contactSchema = new mongoose.Schema(
       trim: true,
       maxlength: [100, 'Country cannot exceed 100 characters']
     },
+    services: {
+      type: [String],
+      default: []
+    },
+    service: {
+      type: String,
+      trim: true
+    },
     message: {
       type: String,
       required: [true, 'Message is required'],

@@ -24,7 +24,7 @@ export const CtaBanner: React.FC<CtaBannerProps> = ({
   className
 }) => {
   return (
-    <section className={cn("py-24 bg-[#F7F3EA]", className)}>
+    <section className={cn("py-24 bg-[#F8F5EE]", className)}>
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -32,29 +32,28 @@ export const CtaBanner: React.FC<CtaBannerProps> = ({
         transition={{ duration: 0.2, ease: "easeOut" }}
         className="max-w-7xl mx-auto px-6 lg:px-8"
       >
-        <div className="bg-[#102547] rounded-3xl overflow-hidden relative shadow-[0_20px_60px_-15px_rgba(16,37,71,0.4)] border border-[#102547]/10">
-          {/* Subtle background pattern/gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#132D56] via-[#102547] to-[#07162D] opacity-80" />
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#D4AF37] rounded-full filter blur-[150px] opacity-[0.05] translate-x-1/3 -translate-y-1/3 pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#3378D8] rounded-full filter blur-[150px] opacity-[0.05] -translate-x-1/3 translate-y-1/3 pointer-events-none" />
+        <div className="bg-[#10254A] rounded-3xl overflow-hidden relative shadow-[0_20px_50px_rgba(16,37,74,0.2)] border border-[#D4AF37]/30">
+          {/* Subtle background warm gold lighting */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#17345C] via-[#10254A] to-[#0A1830] opacity-90" />
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#D4AF37] rounded-full filter blur-[150px] opacity-[0.08] translate-x-1/3 -translate-y-1/3 pointer-events-none" />
 
           <div className="relative z-10 py-24 px-8 md:px-16 flex flex-col md:flex-row items-center justify-between gap-12">
             <div className="max-w-2xl text-center md:text-left">
-              <h2 className="text-4xl md:text-5xl font-serif text-white mb-6 leading-tight drop-shadow-sm">
+              <h2 className="text-4xl md:text-5xl font-serif text-white mb-6 leading-tight">
                 {title}
               </h2>
-              <p className="text-lg text-white/70 font-sans leading-relaxed">
+              <p className="text-lg text-[#E7DED2] font-sans leading-relaxed">
                 {description}
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 shrink-0">
-              <Button to={primaryActionTo || "/contact"} size="lg" variant="primary">
+              <Button to={primaryActionTo || "/contact"} size="lg" className="bg-[#D4AF37] text-[#10254A] border border-[#D4AF37] hover:bg-[#C59F27] font-semibold">
                 {primaryActionText}
                 <ArrowRight className="w-5 h-5 ml-2 transition-transform duration-200 group-hover:translate-x-1" />
               </Button>
               {secondaryActionText && (
-                <Button to={secondaryActionTo || "/services"} size="lg" variant="outline" className="text-white border-white/20 hover:bg-white/10 hover:border-[#D4AF37]/40 hover:-translate-y-1.5 transition-all duration-200">
+                <Button to={secondaryActionTo || "/services"} size="lg" className="bg-white text-[#10254A] border border-white hover:border-[#D4AF37] hover:bg-[#F8F5EE] hover:text-[#10254A] font-semibold shadow-md">
                   {secondaryActionText}
                 </Button>
               )}
