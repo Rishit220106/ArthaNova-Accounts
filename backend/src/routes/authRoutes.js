@@ -5,9 +5,17 @@ import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// Note: Before production deployment, the register endpoint should be disabled
-// or removed so that only one administrator account can exist.
-router.post('/register', validateRegister, register);
+const allowRegisterInProd = (req, res, next) => {
+  if (process.env.NODE_ENV === 'production' && process.env.ENABLE_ADMIN_REGISTRATION !== 'true') {
+    return res.status(403).json({
+      success: false,
+      message: 'Admin registration is disabled in production.'
+    });
+  }
+  next();
+};
+
+router.post('/register', allowRegisterInProd, validateRegister, register);
 router.post('/login', validateLogin, login);
 router.get('/me', protect, getMe);
 

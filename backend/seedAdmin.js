@@ -15,18 +15,25 @@ const seedAdmin = async () => {
     await connectDB();
 
     const email = process.env.ADMIN_EMAIL || 'amisampatacca@gmail.com';
+    const password = process.env.ADMIN_PASSWORD;
+
+    if (!password) {
+      console.error('❌ Error: ADMIN_PASSWORD environment variable is required to seed admin user.');
+      process.exit(1);
+    }
+
     const existing = await Admin.findOne({ email });
 
     if (existing) {
       existing.name = 'Ami Sampat';
-      existing.password = 'ami@0812ACCA';
+      existing.password = password;
       await existing.save();
-      console.log(`✅ Admin user updated successfully: Ami Sampat (${email})`);
+      console.log(`✅ Admin user password updated successfully: Ami Sampat (${email})`);
     } else {
       await Admin.create({
         name: 'Ami Sampat',
         email,
-        password: 'ami@0812ACCA',
+        password,
         role: 'admin'
       });
       console.log(`✅ Admin user created successfully: Ami Sampat (${email})`);

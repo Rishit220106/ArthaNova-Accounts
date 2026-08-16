@@ -17,6 +17,7 @@ app.set('trust proxy', 1);
 // Flexible CORS configuration for development and production
 const allowedOrigins = [
   process.env.CLIENT_URL,
+  'https://arthanovaccounts.com',
   'http://localhost:3000',
   'http://localhost:5173',
   'http://127.0.0.1:3000',
@@ -26,11 +27,13 @@ const allowedOrigins = [
 const corsOptions = {
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps, curl, or same-origin)
-    if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development') {
-      callback(null, true);
-    } else {
-      callback(null, true);
+    if (!origin) {
+      return callback(null, true);
     }
+    if (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development') {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS policy blocks access from origin: ${origin}`));
   },
   credentials: true,
   optionsSuccessStatus: 200
