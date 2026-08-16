@@ -99,7 +99,7 @@ export const AdminSettings: React.FC = () => {
           <div className="bg-[#0D2142]/65 backdrop-blur-2xl rounded-[28px] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.4)] p-6 text-center space-y-4 relative overflow-hidden">
             <div className="relative inline-block">
               <img
-                src={user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256'}
+                src={user?.avatar || '/team/ami-sampat.jpg'}
                 alt={user?.name || 'Admin Avatar'}
                 className="w-24 h-24 rounded-2xl object-cover ring-4 ring-blue-500/30 shadow-xl mx-auto"
               />

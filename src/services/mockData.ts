@@ -38,7 +38,7 @@ export const INITIAL_ADMIN_USER: AdminUser = {
   email: 'admin@arthanov.com',
   role: 'Senior Managing Partner',
   department: 'Tax & Corporate Advisory',
-  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256',
+  avatar: '/team/ami-sampat.jpg',
   lastLogin: '2026-07-26 18:42:00'
 };
 

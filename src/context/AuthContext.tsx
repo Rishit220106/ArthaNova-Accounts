@@ -57,7 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             email: userData.email || '',
             role: userData.role || 'Administrator',
             department: 'Tax & Corporate Advisory',
-            avatar: userData.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256',
+            avatar: userData.avatar || '/team/ami-sampat.jpg',
             lastLogin: new Date().toISOString().replace('T', ' ').substring(0, 19)
           });
           setToken(storedToken);
@@ -93,7 +93,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email: result.user.email || email,
         role: result.user.role || 'Administrator',
         department: 'Tax & Corporate Advisory',
-        avatar: result.user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256',
+        avatar: result.user.avatar || '/team/ami-sampat.jpg',
         lastLogin: new Date().toISOString().replace('T', ' ').substring(0, 19)
       });
     } catch (err: any) {

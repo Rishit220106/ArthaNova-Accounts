@@ -158,7 +158,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar }) => {
             className="flex items-center gap-3 p-1.5 sm:px-3 sm:py-2 rounded-2xl bg-white/[0.05] border border-white/10 hover:bg-white/10 transition-all cursor-pointer shadow-sm group"
           >
             <img
-              src={user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256'}
+              src={user?.avatar || '/team/ami-sampat.jpg'}
               alt={user?.name || 'User'}
               className="w-8 h-8 rounded-xl object-cover ring-2 ring-blue-500/30"
             />

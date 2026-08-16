@@ -86,7 +86,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-md shadow-inner">
               <div className="relative">
                 <img
-                  src={user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256'}
+                  src={user?.avatar || '/team/ami-sampat.jpg'}
                   alt={user?.name || 'Admin'}
                   className="w-10 h-10 rounded-xl object-cover ring-2 ring-blue-400/30"
                 />
