@@ -30,6 +30,10 @@ export interface AdminUser {
   department: string;
   avatar: string;
   lastLogin: string;
+  securityPinEnabled?: boolean;
+  securityPinChangedAt?: string | null;
+  securityPinRotationDays?: number;
+  isPinExpired?: boolean;
 }
 
 export const INITIAL_ADMIN_USER: AdminUser = {

@@ -16,8 +16,13 @@ export const protect = asyncHandler(async (req, res, next) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+      // Explicitly reject challenge tokens on protected endpoints
+      if (decoded.purpose) {
+        return next(new AppError('Not authorized, incomplete authentication challenge', 401));
+      }
+
       // Get admin from the token
-      req.admin = await Admin.findById(decoded.id).select('-password');
+      req.admin = await Admin.findById(decoded.id).select('-password -securityPinHash');
       
       if (!req.admin) {
         return next(new AppError('Not authorized, admin deleted', 401));

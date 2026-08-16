@@ -59,13 +59,17 @@ export async function apiRequest<T = any>(
       headers
     });
 
-    // Handle 401 Unauthorized
+    // Handle 401 Unauthorized for session tokens (skip callback for login/PIN challenge endpoints)
     if (response.status === 401) {
-      removeStoredToken();
-      if (onUnauthorizedCallback) {
-        onUnauthorizedCallback();
-      } else {
-        if (window.location.pathname !== '/admin/login') {
+      const isAuthEndpoint = endpoint.includes('/auth/login') ||
+                             endpoint.includes('/auth/verify-security-pin') ||
+                             endpoint.includes('/auth/setup-security-pin');
+
+      if (!isAuthEndpoint) {
+        removeStoredToken();
+        if (onUnauthorizedCallback) {
+          onUnauthorizedCallback();
+        } else if (window.location.pathname !== '/admin/login') {
           window.location.href = '/admin/login';
         }
       }

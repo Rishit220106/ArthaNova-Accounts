@@ -66,3 +66,74 @@ export const validateUpdatePassword = [
   }
 ];
 
+export const validateVerifyPin = [
+  check('challengeToken')
+    .notEmpty()
+    .withMessage('Challenge token is required'),
+  check('pin')
+    .notEmpty()
+    .withMessage('Security PIN is required')
+    .matches(/^\d{6}$/)
+    .withMessage('Security PIN must be exactly 6 numeric digits'),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const messages = errors.array().map(err => err.msg);
+      return next(new AppError(messages.join(', '), 400));
+    }
+    next();
+  }
+];
+
+export const validateSetupPin = [
+  check('challengeToken')
+    .notEmpty()
+    .withMessage('Challenge token is required'),
+  check('pin')
+    .notEmpty()
+    .withMessage('Security PIN is required')
+    .matches(/^\d{6}$/)
+    .withMessage('Security PIN must be exactly 6 numeric digits'),
+  check('confirmPin')
+    .notEmpty()
+    .withMessage('Confirm PIN is required')
+    .custom((value, { req }) => value === req.body.pin)
+    .withMessage('PIN confirmation does not match'),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const messages = errors.array().map(err => err.msg);
+      return next(new AppError(messages.join(', '), 400));
+    }
+    next();
+  }
+];
+
+export const validateUpdatePin = [
+  check('currentPin')
+    .notEmpty()
+    .withMessage('Current Security PIN is required')
+    .matches(/^\d{6}$/)
+    .withMessage('Current Security PIN must be exactly 6 numeric digits'),
+  check('newPin')
+    .notEmpty()
+    .withMessage('New Security PIN is required')
+    .matches(/^\d{6}$/)
+    .withMessage('New Security PIN must be exactly 6 numeric digits')
+    .custom((value, { req }) => value !== req.body.currentPin)
+    .withMessage('New Security PIN must not equal current Security PIN'),
+  check('confirmNewPin')
+    .notEmpty()
+    .withMessage('Confirm New Security PIN is required')
+    .custom((value, { req }) => value === req.body.newPin)
+    .withMessage('New Security PIN and confirmation must match'),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const messages = errors.array().map(err => err.msg);
+      return next(new AppError(messages.join(', '), 400));
+    }
+    next();
+  }
+];
+

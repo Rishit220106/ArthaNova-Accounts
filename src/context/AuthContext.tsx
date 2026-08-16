@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { authService, AdminUserResponse } from '../services/authService';
+import { authService, AdminUserResponse, LoginResult } from '../services/authService';
 import { setUnauthorizedCallback } from '../services/apiClient';
 import { AdminUser } from '../services/mockData';
 
@@ -9,9 +9,12 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
-  login: (email: string, password?: string) => Promise<void>;
+  login: (email: string, password?: string) => Promise<LoginResult>;
+  verifySecurityPin: (challengeToken: string, pin: string) => Promise<void>;
+  setupSecurityPin: (challengeToken: string, pin: string, confirmPin: string) => Promise<void>;
   logout: () => void;
   updateProfile: (data: Partial<AdminUser>) => void;
+  refreshUser: () => Promise<void>;
   clearError: () => void;
 }
 
@@ -36,6 +39,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   }, [logout]);
 
+  const mapUserData = (userData: AdminUserResponse): AdminUser => ({
+    id: userData._id || '1',
+    name: userData.name || 'Admin User',
+    email: userData.email || '',
+    role: userData.role || 'Administrator',
+    department: 'Tax & Corporate Advisory',
+    avatar: userData.avatar || '/team/ami-sampat.jpg',
+    lastLogin: new Date().toISOString().replace('T', ' ').substring(0, 19),
+    securityPinEnabled: userData.securityPinEnabled ?? true,
+    securityPinChangedAt: userData.securityPinChangedAt,
+    securityPinRotationDays: userData.securityPinRotationDays ?? 90,
+    isPinExpired: userData.isPinExpired ?? false,
+  });
+
+  const refreshUser = useCallback(async () => {
+    const storedToken = authService.getToken();
+    if (!storedToken) return;
+    try {
+      const userData: AdminUserResponse = await authService.getMe();
+      setUser(mapUserData(userData));
+    } catch (err) {
+      // Ignore background refresh errors
+    }
+  }, []);
+
   // Check current session on mount via GET /auth/me
   useEffect(() => {
     let isMounted = true;
@@ -51,15 +79,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         const userData: AdminUserResponse = await authService.getMe();
         if (isMounted) {
-          setUser({
-            id: userData._id || '1',
-            name: userData.name || 'Admin User',
-            email: userData.email || '',
-            role: userData.role || 'Administrator',
-            department: 'Tax & Corporate Advisory',
-            avatar: userData.avatar || '/team/ami-sampat.jpg',
-            lastLogin: new Date().toISOString().replace('T', ' ').substring(0, 19)
-          });
+          setUser(mapUserData(userData));
           setToken(storedToken);
         }
       } catch (err: any) {
@@ -81,23 +101,54 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, [logout]);
 
-  const login = async (email: string, password?: string) => {
+  const login = async (email: string, password?: string): Promise<LoginResult> => {
     setError(null);
     setIsLoading(true);
     try {
       const result = await authService.login(email, password);
-      setToken(result.token);
-      setUser({
-        id: result.user._id || '1',
-        name: result.user.name || 'Admin User',
-        email: result.user.email || email,
-        role: result.user.role || 'Administrator',
-        department: 'Tax & Corporate Advisory',
-        avatar: result.user.avatar || '/team/ami-sampat.jpg',
-        lastLogin: new Date().toISOString().replace('T', ' ').substring(0, 19)
-      });
+
+      if (result.requiresSecurityPin || result.requiresSecurityPinSetup) {
+        return result;
+      }
+
+      if (result.token && result.user) {
+        setToken(result.token);
+        setUser(mapUserData(result.user));
+      }
+
+      return result;
     } catch (err: any) {
       setError(err.message || 'Login failed. Please check your credentials.');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const verifySecurityPin = async (challengeToken: string, pin: string) => {
+    setError(null);
+    setIsLoading(true);
+    try {
+      const result = await authService.verifySecurityPin(challengeToken, pin);
+      setToken(result.token);
+      setUser(mapUserData(result.user));
+    } catch (err: any) {
+      setError(err.message || 'Security PIN verification failed.');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const setupSecurityPin = async (challengeToken: string, pin: string, confirmPin: string) => {
+    setError(null);
+    setIsLoading(true);
+    try {
+      const result = await authService.setupSecurityPin(challengeToken, pin, confirmPin);
+      setToken(result.token);
+      setUser(mapUserData(result.user));
+    } catch (err: any) {
+      setError(err.message || 'Failed to set up Security PIN.');
       throw err;
     } finally {
       setIsLoading(false);
@@ -120,8 +171,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isLoading,
         error,
         login,
+        verifySecurityPin,
+        setupSecurityPin,
         logout,
         updateProfile,
+        refreshUser,
         clearError
       }}
     >

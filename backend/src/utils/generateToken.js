@@ -6,4 +6,10 @@ const generateToken = (id, role) => {
   });
 };
 
+export const generateChallengeToken = (id, purpose = 'PIN_CHALLENGE') => {
+  return jwt.sign({ id, purpose }, process.env.JWT_SECRET, {
+    expiresIn: '5m',
+  });
+};
+
 export default generateToken;

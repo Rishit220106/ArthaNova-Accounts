@@ -297,14 +297,21 @@ const TeddyMascotSection = () => {
 export const AdminLogin: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, isAuthenticated, error: authError, clearError } = useAuth();
+  const { login, verifySecurityPin, setupSecurityPin, isAuthenticated, error: authError, clearError } = useAuth();
 
-  // Requirement 2: Empty email by default (no demo prefill)
+  // Login Form States
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [localError, setLocalError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Security PIN Challenge States
+  const [step, setStep] = useState<'password' | 'pin' | 'pin_setup'>('password');
+  const [challengeToken, setChallengeToken] = useState<string>('');
+  const [pin, setPin] = useState<string>('');
+  const [confirmPin, setConfirmPin] = useState<string>('');
+  const [isPinExpired, setIsPinExpired] = useState<boolean>(false);
 
   // Mouse position for interactive background lighting
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -329,7 +336,7 @@ export const AdminLogin: React.FC = () => {
     }
   }, [isAuthenticated, navigate, from]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLocalError('');
     clearError();
@@ -341,13 +348,82 @@ export const AdminLogin: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      await login(email.trim(), password.trim());
-      navigate(from, { replace: true });
+      const res = await login(email.trim(), password.trim());
+
+      if (res.requiresSecurityPinSetup && res.challengeToken) {
+        setChallengeToken(res.challengeToken);
+        setStep('pin_setup');
+      } else if (res.requiresSecurityPin && res.challengeToken) {
+        setChallengeToken(res.challengeToken);
+        setIsPinExpired(!!res.isPinExpired);
+        setStep('pin');
+      } else {
+        navigate(from, { replace: true });
+      }
     } catch (err: any) {
       setLocalError(err.message || 'Login failed. Invalid credentials.');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handlePinVerifySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLocalError('');
+    clearError();
+
+    if (!/^\d{6}$/.test(pin)) {
+      setLocalError('Security PIN must be exactly 6 numeric digits.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await verifySecurityPin(challengeToken, pin);
+      navigate(from, { replace: true });
+    } catch (err: any) {
+      setPin(''); // Clear PIN input on failed attempts
+      setLocalError(err.message || 'Security PIN verification failed.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handlePinSetupSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLocalError('');
+    clearError();
+
+    if (!/^\d{6}$/.test(pin)) {
+      setLocalError('Security PIN must be exactly 6 numeric digits.');
+      return;
+    }
+
+    if (pin !== confirmPin) {
+      setLocalError('Security PIN confirmation does not match.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await setupSecurityPin(challengeToken, pin, confirmPin);
+      navigate(from, { replace: true });
+    } catch (err: any) {
+      setPin('');
+      setConfirmPin('');
+      setLocalError(err.message || 'Failed to set up Security PIN.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleBackToLogin = () => {
+    setStep('password');
+    setChallengeToken('');
+    setPin('');
+    setConfirmPin('');
+    setLocalError('');
+    clearError();
   };
 
   const errorMessage = localError || authError;
@@ -418,105 +494,291 @@ export const AdminLogin: React.FC = () => {
               {/* Subtle glass line highlight */}
               <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
 
-              <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-semibold">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                  Admin Authentication
-                </div>
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                  Welcome back
-                </h2>
-                <p className="text-xs text-slate-300">
-                  Access partner metrics, client inquiries, and firm analytics.
-                </p>
-              </div>
+              {/* STEP 1: PASSWORD AUTHENTICATION */}
+              {step === 'password' && (
+                <>
+                  <div className="space-y-2">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-semibold">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                      Admin Authentication
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                      Welcome back
+                    </h2>
+                    <p className="text-xs text-slate-300">
+                      Access partner metrics, client inquiries, and firm analytics.
+                    </p>
+                  </div>
 
-              {errorMessage && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 font-semibold flex items-start gap-3 backdrop-blur-md"
-                >
-                  <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                  <span>{errorMessage}</span>
-                </motion.div>
+                  {errorMessage && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 font-semibold flex items-start gap-3 backdrop-blur-md"
+                    >
+                      <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                      <span>{errorMessage}</span>
+                    </motion.div>
+                  )}
+
+                  <form onSubmit={handlePasswordSubmit} className="space-y-5">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">
+                        Email Address
+                      </label>
+                      <div className="relative">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400/80" />
+                        <input
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="Enter your email"
+                          required
+                          className="w-full pl-11 pr-4 py-3.5 text-xs sm:text-sm bg-white/[0.05] border border-white/12 rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white/[0.08] backdrop-blur-md transition-all font-medium"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider">
+                          Password
+                        </label>
+                      </div>
+                      <div className="relative">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400/80" />
+                        <input
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="••••••••"
+                          required
+                          className="w-full pl-11 pr-4 py-3.5 text-xs sm:text-sm bg-white/[0.05] border border-white/12 rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white/[0.08] backdrop-blur-md transition-all font-medium"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1">
+                      <label className="flex items-center gap-2.5 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={rememberMe}
+                          onChange={(e) => setRememberMe(e.target.checked)}
+                          className="w-4 h-4 text-blue-500 rounded-md border-white/20 bg-white/5 focus:ring-blue-500/50 cursor-pointer"
+                        />
+                        <span className="text-xs text-slate-300 group-hover:text-white transition-colors">
+                          Remember session
+                        </span>
+                      </label>
+                    </div>
+
+                    <motion.button
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.99 }}
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full flex items-center justify-center gap-2 py-4 px-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-600 hover:from-blue-500 hover:to-pink-500 text-white rounded-2xl text-xs sm:text-sm font-extrabold shadow-[0_10px_30px_rgba(59,130,246,0.4)] transition-all cursor-pointer disabled:opacity-50 border border-white/20"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-white" />
+                          <span>Verifying Password...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Continue to Security PIN</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </>
+                      )}
+                    </motion.button>
+                  </form>
+                </>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Requirement 2: Email Field without prefilled demo email */}
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400/80" />
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter your email"
-                      required
-                      className="w-full pl-11 pr-4 py-3.5 text-xs sm:text-sm bg-white/[0.05] border border-white/12 rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white/[0.08] backdrop-blur-md transition-all font-medium"
-                    />
+              {/* STEP 2: SECURITY PIN VERIFICATION */}
+              {step === 'pin' && (
+                <>
+                  <div className="space-y-2">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-semibold">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                      Second Factor Authentication
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                      Security Verification
+                    </h2>
+                    <p className="text-xs text-slate-300">
+                      Enter your 6-digit Security PIN to complete authentication.
+                    </p>
                   </div>
-                </div>
 
-                {/* Password Field */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider">
-                      Password
-                    </label>
-                  </div>
-                  <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400/80" />
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      required
-                      className="w-full pl-11 pr-4 py-3.5 text-xs sm:text-sm bg-white/[0.05] border border-white/12 rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white/[0.08] backdrop-blur-md transition-all font-medium"
-                    />
-                  </div>
-                </div>
-
-                {/* Remember Me */}
-                <div className="flex items-center justify-between pt-1">
-                  <label className="flex items-center gap-2.5 cursor-pointer group">
-                    <input
-                      type="checkbox"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      className="w-4 h-4 text-blue-500 rounded-md border-white/20 bg-white/5 focus:ring-blue-500/50 cursor-pointer"
-                    />
-                    <span className="text-xs text-slate-300 group-hover:text-white transition-colors">
-                      Remember session (JWT token)
-                    </span>
-                  </label>
-                </div>
-
-                {/* Submit Button */}
-                <motion.button
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full flex items-center justify-center gap-2 py-4 px-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-600 hover:from-blue-500 hover:to-pink-500 text-white rounded-2xl text-xs sm:text-sm font-extrabold shadow-[0_10px_30px_rgba(59,130,246,0.4)] transition-all cursor-pointer disabled:opacity-50 border border-white/20"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin text-white" />
-                      <span>Authenticating JWT...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Sign In to Admin Portal</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </>
+                  {isPinExpired && (
+                    <div className="p-3 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      <span>Your Security PIN is due for rotation. Please update it in Settings after logging in.</span>
+                    </div>
                   )}
-                </motion.button>
-              </form>
+
+                  {errorMessage && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 font-semibold flex items-start gap-3 backdrop-blur-md"
+                    >
+                      <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                      <span>{errorMessage}</span>
+                    </motion.div>
+                  )}
+
+                  <form onSubmit={handlePinVerifySubmit} className="space-y-5">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">
+                        6-Digit Security PIN
+                      </label>
+                      <div className="relative">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/80" />
+                        <input
+                          type="password"
+                          maxLength={6}
+                          value={pin}
+                          onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
+                          placeholder="• • • • • •"
+                          required
+                          autoFocus
+                          className="w-full pl-11 pr-4 py-3.5 text-center tracking-[0.5em] text-lg font-mono bg-white/[0.05] border border-white/12 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white/[0.08] backdrop-blur-md transition-all font-bold"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-3 pt-2">
+                      <motion.button
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                        type="submit"
+                        disabled={isSubmitting || pin.length !== 6}
+                        className="w-full flex items-center justify-center gap-2 py-4 px-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 hover:from-emerald-500 hover:to-blue-500 text-white rounded-2xl text-xs sm:text-sm font-extrabold shadow-[0_10px_30px_rgba(16,185,129,0.3)] transition-all cursor-pointer disabled:opacity-50 border border-white/20"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin text-white" />
+                            <span>Verifying Security PIN...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>Verify & Continue</span>
+                            <ArrowRight className="w-4 h-4" />
+                          </>
+                        )}
+                      </motion.button>
+
+                      <button
+                        type="button"
+                        onClick={handleBackToLogin}
+                        className="w-full py-3 text-xs font-bold text-slate-400 hover:text-white transition-colors cursor-pointer"
+                      >
+                        Back to Password Login
+                      </button>
+                    </div>
+                  </form>
+                </>
+              )}
+
+              {/* STEP 2 SETUP: INITIAL SECURITY PIN SETUP */}
+              {step === 'pin_setup' && (
+                <>
+                  <div className="space-y-2">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-semibold">
+                      <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
+                      First-Time Security PIN Setup
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                      Setup Security PIN
+                    </h2>
+                    <p className="text-xs text-slate-300">
+                      Configure a secure 6-digit Security PIN to protect your admin account.
+                    </p>
+                  </div>
+
+                  {errorMessage && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 font-semibold flex items-start gap-3 backdrop-blur-md"
+                    >
+                      <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                      <span>{errorMessage}</span>
+                    </motion.div>
+                  )}
+
+                  <form onSubmit={handlePinSetupSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                        New 6-Digit Security PIN
+                      </label>
+                      <div className="relative">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400/80" />
+                        <input
+                          type="password"
+                          maxLength={6}
+                          value={pin}
+                          onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
+                          placeholder="• • • • • •"
+                          required
+                          autoFocus
+                          className="w-full pl-11 pr-4 py-3 text-center tracking-[0.5em] text-lg font-mono bg-white/[0.05] border border-white/12 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                        Confirm 6-Digit Security PIN
+                      </label>
+                      <div className="relative">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400/80" />
+                        <input
+                          type="password"
+                          maxLength={6}
+                          value={confirmPin}
+                          onChange={(e) => setConfirmPin(e.target.value.replace(/\D/g, ''))}
+                          placeholder="• • • • • •"
+                          required
+                          className="w-full pl-11 pr-4 py-3 text-center tracking-[0.5em] text-lg font-mono bg-white/[0.05] border border-white/12 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-3 pt-2">
+                      <motion.button
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                        type="submit"
+                        disabled={isSubmitting || pin.length !== 6 || confirmPin.length !== 6}
+                        className="w-full flex items-center justify-center gap-2 py-4 px-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-600 hover:from-blue-500 hover:to-pink-500 text-white rounded-2xl text-xs sm:text-sm font-extrabold shadow-[0_10px_30px_rgba(59,130,246,0.4)] transition-all cursor-pointer disabled:opacity-50 border border-white/20"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin text-white" />
+                            <span>Setting up PIN...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>Save Security PIN & Login</span>
+                            <ArrowRight className="w-4 h-4" />
+                          </>
+                        )}
+                      </motion.button>
+
+                      <button
+                        type="button"
+                        onClick={handleBackToLogin}
+                        className="w-full py-3 text-xs font-bold text-slate-400 hover:text-white transition-colors cursor-pointer"
+                      >
+                        Back to Password Login
+                      </button>
+                    </div>
+                  </form>
+                </>
+              )}
             </motion.div>
           </div>
 

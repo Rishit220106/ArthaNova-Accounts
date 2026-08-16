@@ -16,7 +16,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { authService } from '../../services/authService';
 
 export const AdminSettings: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, refreshUser } = useAuth();
   const navigate = useNavigate();
 
   // Change Password Form State
@@ -25,6 +25,14 @@ export const AdminSettings: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordMsg, setPasswordMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+
+  // Security PIN Form State
+  const [currentPin, setCurrentPin] = useState('');
+  const [newPin, setNewPin] = useState('');
+  const [confirmNewPin, setConfirmNewPin] = useState('');
+  const [pinMsg, setPinMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [isUpdatingPin, setIsUpdatingPin] = useState(false);
+  const [showPinForm, setShowPinForm] = useState(false);
 
   // Preference Toggles
   const [emailAlerts, setEmailAlerts] = useState(true);
@@ -75,6 +83,60 @@ export const AdminSettings: React.FC = () => {
     }
   };
 
+  const handleChangePin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPinMsg(null);
+
+    if (!/^\d{6}$/.test(currentPin)) {
+      setPinMsg({ type: 'error', text: 'Current Security PIN must be exactly 6 numeric digits.' });
+      return;
+    }
+
+    if (!/^\d{6}$/.test(newPin)) {
+      setPinMsg({ type: 'error', text: 'New Security PIN must be exactly 6 numeric digits.' });
+      return;
+    }
+
+    if (newPin === currentPin) {
+      setPinMsg({ type: 'error', text: 'New Security PIN must not equal your current Security PIN.' });
+      return;
+    }
+
+    if (newPin !== confirmNewPin) {
+      setPinMsg({ type: 'error', text: 'New Security PIN and confirmation do not match.' });
+      return;
+    }
+
+    setIsUpdatingPin(true);
+
+    try {
+      const res = await authService.updateSecurityPin({
+        currentPin,
+        newPin,
+        confirmNewPin
+      });
+
+      setPinMsg({ type: 'success', text: res.message || 'Security PIN updated successfully!' });
+      setCurrentPin('');
+      setNewPin('');
+      setConfirmNewPin('');
+      setShowPinForm(false);
+      await refreshUser();
+    } catch (err: any) {
+      setPinMsg({ type: 'error', text: err.message || 'Failed to update Security PIN.' });
+    } finally {
+      setIsUpdatingPin(false);
+    }
+  };
+
+  const formattedPinDate = user?.securityPinChangedAt
+    ? new Date(user.securityPinChangedAt).toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      })
+    : 'Configured';
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
@@ -106,7 +168,7 @@ export const AdminSettings: React.FC = () => {
         </button>
       </div>
 
-      {/* Grid: Left Column Profile Card & System Toggles, Right Column Change Password */}
+      {/* Grid: Left Column Profile Card & System Toggles, Right Column Change Password & PIN */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Profile Card Component (1/3 width) */}
         <div className="space-y-6">
@@ -185,8 +247,159 @@ export const AdminSettings: React.FC = () => {
           </div>
         </div>
 
-        {/* Change Password Form (2/3 width) */}
+        {/* Security Settings Cards (2/3 width) */}
         <div className="lg:col-span-2 space-y-6">
+
+          {/* SECURITY PIN CARD */}
+          <div className="bg-[#0D2142]/65 backdrop-blur-2xl rounded-[28px] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.4)] p-8 space-y-6">
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                  <Shield className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-extrabold text-white">Security PIN</h2>
+                  <p className="text-xs text-slate-300">
+                    Protect your admin account with a 6-digit security PIN.
+                  </p>
+                </div>
+              </div>
+
+              {user?.isPinExpired && (
+                <div className="px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold rounded-full flex items-center gap-1.5 animate-pulse">
+                  ⚠ Security PIN rotation required
+                </div>
+              )}
+            </div>
+
+            {/* Status Information Box */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-white/[0.03] border border-white/10 rounded-2xl p-4 text-xs">
+              <div>
+                <span className="text-slate-400 block text-[11px] uppercase tracking-wider font-bold">Status</span>
+                <span className="text-emerald-400 font-bold flex items-center gap-1 mt-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  {user?.securityPinEnabled !== false ? 'Enabled' : 'Disabled'}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[11px] uppercase tracking-wider font-bold">Last Changed</span>
+                <span className="text-white font-medium mt-1 block">{formattedPinDate}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[11px] uppercase tracking-wider font-bold">Rotation Policy</span>
+                <span className="text-blue-300 font-medium mt-1 block">Every {user?.securityPinRotationDays || 90} days</span>
+              </div>
+            </div>
+
+            {pinMsg && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className={`p-4 rounded-2xl text-xs font-bold border backdrop-blur-md ${
+                  pinMsg.type === 'success'
+                    ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                    : 'bg-rose-500/15 text-rose-300 border-rose-500/30'
+                }`}
+              >
+                {pinMsg.text}
+              </motion.div>
+            )}
+
+            {!showPinForm ? (
+              <div>
+                <button
+                  onClick={() => {
+                    setPinMsg(null);
+                    setShowPinForm(true);
+                  }}
+                  className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-2xl text-xs sm:text-sm font-extrabold shadow-lg shadow-emerald-500/25 border border-white/20 transition-all cursor-pointer"
+                >
+                  {user?.isPinExpired ? 'Update Security PIN' : 'Change Security PIN'}
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleChangePin} className="space-y-4 max-w-md pt-2 border-t border-white/10">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                    Current Security PIN
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400" />
+                    <input
+                      type="password"
+                      maxLength={6}
+                      value={currentPin}
+                      onChange={(e) => setCurrentPin(e.target.value.replace(/\D/g, ''))}
+                      placeholder="• • • • • •"
+                      required
+                      className="w-full pl-11 pr-4 py-3 text-center tracking-[0.5em] text-sm font-mono bg-white/[0.05] border border-white/12 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                    New 6-Digit Security PIN
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400" />
+                    <input
+                      type="password"
+                      maxLength={6}
+                      value={newPin}
+                      onChange={(e) => setNewPin(e.target.value.replace(/\D/g, ''))}
+                      placeholder="• • • • • •"
+                      required
+                      className="w-full pl-11 pr-4 py-3 text-center tracking-[0.5em] text-sm font-mono bg-white/[0.05] border border-white/12 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                    Confirm New Security PIN
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400" />
+                    <input
+                      type="password"
+                      maxLength={6}
+                      value={confirmNewPin}
+                      onChange={(e) => setConfirmNewPin(e.target.value.replace(/\D/g, ''))}
+                      placeholder="• • • • • •"
+                      required
+                      className="w-full pl-11 pr-4 py-3 text-center tracking-[0.5em] text-sm font-mono bg-white/[0.05] border border-white/12 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 pt-3">
+                  <motion.button
+                    whileHover={{ scale: isUpdatingPin ? 1 : 1.02 }}
+                    whileTap={{ scale: isUpdatingPin ? 1 : 0.98 }}
+                    type="submit"
+                    disabled={isUpdatingPin}
+                    className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-50 text-white rounded-2xl text-xs sm:text-sm font-extrabold shadow-lg shadow-emerald-500/25 border border-white/20 transition-all cursor-pointer"
+                  >
+                    {isUpdatingPin ? 'Updating Security PIN...' : 'Save New Security PIN'}
+                  </motion.button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowPinForm(false);
+                      setPinMsg(null);
+                    }}
+                    className="px-4 py-3 bg-white/5 hover:bg-white/10 text-slate-300 rounded-2xl text-xs font-bold transition-all cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+
+          {/* CHANGE ADMIN PASSWORD CARD */}
           <div className="bg-[#0D2142]/65 backdrop-blur-2xl rounded-[28px] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.4)] p-8 space-y-6">
             <div className="flex items-center gap-3 border-b border-white/10 pb-4">
               <div className="p-3 rounded-2xl bg-blue-500/20 text-blue-400 border border-blue-500/30">
