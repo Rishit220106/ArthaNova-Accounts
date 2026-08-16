@@ -1,13 +1,18 @@
 import mongoose from "mongoose";
 
 const connectDB = async () => {
-  try {
-    console.log(
-      "MONGO_URI:",
-      process.env.MONGO_URI.replace(/\/\/([^:]+):([^@]+)@/, "//$1:********@")
-    );
+  const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
 
-    const conn = await mongoose.connect(process.env.MONGO_URI);
+  if (!mongoUri) {
+    console.error("❌ MONGODB_URI environment variable is not configured.");
+    return;
+  }
+
+  try {
+    const maskedUri = mongoUri.replace(/\/\/([^:]+):([^@]+)@/, "//$1:********@");
+    console.log(`MONGODB_URI: ${maskedUri}`);
+
+    const conn = await mongoose.connect(mongoUri);
 
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
 
@@ -21,7 +26,6 @@ const connectDB = async () => {
 
   } catch (error) {
     console.error(`❌ Error connecting to MongoDB: ${error.message}`);
-    
   }
 };
 

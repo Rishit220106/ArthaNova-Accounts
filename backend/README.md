@@ -45,7 +45,7 @@ cp .env.example .env
 Required variables:
 - `PORT`: Port for the server to run on (default 5000).
 - `NODE_ENV`: Environment (`development` or `production`).
-- `MONGO_URI`: MongoDB Atlas connection string.
+- `MONGODB_URI`: MongoDB Atlas connection string.
 - `JWT_SECRET`: Secret key for JWT generation (if used later).
 - `RESEND_API_KEY`: API key for email service (if used later).
 - `FROM_EMAIL`: Default sender email.
