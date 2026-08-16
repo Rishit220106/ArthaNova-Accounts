@@ -1,6 +1,6 @@
 import express from 'express';
-import { register, login, getMe } from '../controllers/authController.js';
-import { validateRegister, validateLogin } from '../validators/authValidator.js';
+import { register, login, getMe, updatePassword } from '../controllers/authController.js';
+import { validateRegister, validateLogin, validateUpdatePassword } from '../validators/authValidator.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -18,5 +18,7 @@ const allowRegisterInProd = (req, res, next) => {
 router.post('/register', allowRegisterInProd, validateRegister, register);
 router.post('/login', validateLogin, login);
 router.get('/me', protect, getMe);
+router.put('/update-password', protect, validateUpdatePassword, updatePassword);
 
 export default router;
+

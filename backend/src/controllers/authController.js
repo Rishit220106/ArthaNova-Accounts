@@ -84,3 +84,33 @@ export const getMe = asyncHandler(async (req, res, next) => {
     data: admin,
   });
 });
+
+// @desc    Update admin password
+// @route   PUT /api/auth/update-password
+// @access  Private
+export const updatePassword = asyncHandler(async (req, res, next) => {
+  const { currentPassword, newPassword, confirmPassword } = req.body;
+
+  if (newPassword !== confirmPassword) {
+    return next(new AppError('New passwords do not match', 400));
+  }
+
+  const admin = await Admin.findById(req.admin.id);
+  if (!admin) {
+    return next(new AppError('Admin account not found', 404));
+  }
+
+  const isMatch = await admin.matchPassword(currentPassword);
+  if (!isMatch) {
+    return next(new AppError('Current password is incorrect', 400));
+  }
+
+  admin.password = newPassword;
+  await admin.save();
+
+  res.status(200).json({
+    success: true,
+    message: 'Password updated successfully',
+  });
+});
+

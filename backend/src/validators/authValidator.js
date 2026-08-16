@@ -43,3 +43,26 @@ export const validateLogin = [
     next();
   }
 ];
+
+export const validateUpdatePassword = [
+  check('currentPassword')
+    .notEmpty()
+    .withMessage('Current password is required'),
+  check('newPassword')
+    .notEmpty()
+    .withMessage('New password is required')
+    .isLength({ min: 6 })
+    .withMessage('New password must be at least 6 characters long'),
+  check('confirmPassword')
+    .notEmpty()
+    .withMessage('Confirm password is required'),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const messages = errors.array().map(err => err.msg);
+      return next(new AppError(messages.join(', '), 400));
+    }
+    next();
+  }
+];
+

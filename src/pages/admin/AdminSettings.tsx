@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { BreadcrumbNavigation } from '../../components/admin/BreadcrumbNavigation';
 import { useAuth } from '../../hooks/useAuth';
+import { authService } from '../../services/authService';
 
 export const AdminSettings: React.FC = () => {
   const { user, logout } = useAuth();
@@ -23,6 +24,7 @@ export const AdminSettings: React.FC = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordMsg, setPasswordMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
   // Preference Toggles
   const [emailAlerts, setEmailAlerts] = useState(true);
@@ -34,7 +36,7 @@ export const AdminSettings: React.FC = () => {
     navigate('/admin/login');
   };
 
-  const handleChangePassword = (e: React.FormEvent) => {
+  const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setPasswordMsg(null);
 
@@ -53,12 +55,24 @@ export const AdminSettings: React.FC = () => {
       return;
     }
 
-    setPasswordMsg({ type: 'success', text: 'Password changed successfully!' });
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
+    setIsUpdatingPassword(true);
 
-    setTimeout(() => setPasswordMsg(null), 4000);
+    try {
+      const res = await authService.updatePassword({
+        currentPassword,
+        newPassword,
+        confirmPassword
+      });
+
+      setPasswordMsg({ type: 'success', text: res.message || 'Password updated successfully!' });
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (err: any) {
+      setPasswordMsg({ type: 'error', text: err.message || 'Failed to update password.' });
+    } finally {
+      setIsUpdatingPassword(false);
+    }
   };
 
   return (
@@ -257,12 +271,13 @@ export const AdminSettings: React.FC = () => {
 
               <div className="pt-3">
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={{ scale: isUpdatingPassword ? 1 : 1.02 }}
+                  whileTap={{ scale: isUpdatingPassword ? 1 : 0.98 }}
                   type="submit"
-                  className="px-6 py-3.5 bg-gradient-to-r from-blue-600 to-pink-600 hover:from-blue-500 hover:to-pink-500 text-white rounded-2xl text-xs sm:text-sm font-extrabold shadow-lg shadow-blue-500/25 border border-white/20 transition-all cursor-pointer"
+                  disabled={isUpdatingPassword}
+                  className="px-6 py-3.5 bg-gradient-to-r from-blue-600 to-pink-600 hover:from-blue-500 hover:to-pink-500 disabled:opacity-50 text-white rounded-2xl text-xs sm:text-sm font-extrabold shadow-lg shadow-blue-500/25 border border-white/20 transition-all cursor-pointer"
                 >
-                  Update Password
+                  {isUpdatingPassword ? 'Updating Password...' : 'Update Password'}
                 </motion.button>
               </div>
             </form>

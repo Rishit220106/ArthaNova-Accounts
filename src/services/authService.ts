@@ -42,6 +42,13 @@ export const authService = {
     return res.data;
   },
 
+  async updatePassword(data: { currentPassword: string; newPassword: string; confirmPassword: string }): Promise<{ success: boolean; message: string }> {
+    return await apiRequest('/auth/update-password', {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    });
+  },
+
   logout(): void {
     removeStoredToken();
   },
