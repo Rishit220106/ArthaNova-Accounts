@@ -20,6 +20,7 @@ import { RecentActivity } from '../../components/admin/RecentActivity';
 import { QuickActions } from '../../components/admin/QuickActions';
 import { useContacts } from '../../hooks/useContacts';
 import { useAuth } from '../../hooks/useAuth';
+import { SEO } from '../../components/SEO';
 
 export const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -48,12 +49,14 @@ export const AdminDashboard: React.FC = () => {
   };
 
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className="space-y-6"
-    >
+    <>
+      <SEO title="Admin Dashboard" noindex={true} />
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="space-y-6"
+      >
       {/* Breadcrumb Navigation */}
       <BreadcrumbNavigation />
 
@@ -183,5 +186,6 @@ export const AdminDashboard: React.FC = () => {
         </div>
       </motion.div>
     </motion.div>
+    </>
   );
 };

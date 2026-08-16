@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Building2, Lock, Mail, ArrowRight, ShieldCheck, AlertCircle, Loader2, Sparkles } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { SEO } from '../../components/SEO';
 
 // Floating Particles Component for ambient background
 const AmbientParticles = () => {
@@ -429,7 +430,9 @@ export const AdminLogin: React.FC = () => {
   const errorMessage = localError || authError;
 
   return (
-    <div className="min-h-screen flex w-full bg-[#081A36] text-white relative overflow-hidden font-sans">
+    <>
+      <SEO title="Admin Portal" noindex={true} />
+      <div className="min-h-screen flex w-full bg-[#081A36] text-white relative overflow-hidden font-sans">
       {/* Requirement 8: Background Ambient Gradient Blobs & Floating Particles */}
       <motion.div
         animate={{
@@ -811,5 +814,6 @@ export const AdminLogin: React.FC = () => {
 
       </div>
     </div>
+    </>
   );
 };

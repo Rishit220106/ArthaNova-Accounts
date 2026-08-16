@@ -210,7 +210,7 @@ export const Contact = () => {
         title="Contact Us"
         description="Start a conversation with ArthaNova Accounts for tailored accounting, tax, and compliance solutions across the UK, US, and Australia."
         canonical="/contact"
-        schema={`{"@context":"https://schema.org","@type":"ContactPage","name":"Contact Us | ArthaNova Accounts","url":"https://arthanovaaccounts.com/contact","contactPoint":{"@type":"ContactPoint","email":"${BUSINESS_CONTACT.email}","contactType":"customer support"}}`}
+        schema={`{"@context":"https://schema.org","@type":"ContactPage","name":"Contact Us | ArthaNova Accounts","url":"https://arthanovaccounts.com/contact","contactPoint":{"@type":"ContactPoint","email":"${BUSINESS_CONTACT.email}","contactType":"customer support"}}`}
 
         breadcrumbs={[{ "name": "Home", "url": "/" }, { "name": "Contact", "url": "/contact" }]}
       />

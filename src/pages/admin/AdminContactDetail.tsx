@@ -21,6 +21,7 @@ import { UpdateStatusModal } from '../../components/admin/UpdateStatusModal';
 import { DeleteConfirmModal } from '../../components/admin/DeleteConfirmModal';
 import { useContacts } from '../../hooks/useContacts';
 import { Contact } from '../../services/mockData';
+import { SEO } from '../../components/SEO';
 
 export const AdminContactDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -131,8 +132,10 @@ export const AdminContactDetail: React.FC = () => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 15 }}
+    <>
+      <SEO title="Contact Details | Admin" noindex={true} />
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
       className="space-y-6"
@@ -334,5 +337,6 @@ export const AdminContactDetail: React.FC = () => {
         onConfirm={() => handleDelete()}
       />
     </motion.div>
+    </>
   );
 };

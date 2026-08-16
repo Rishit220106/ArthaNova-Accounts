@@ -6,6 +6,8 @@ interface SEOProps {
   description?: string;
   canonical?: string;
   type?: string;
+  image?: string;
+  noindex?: boolean;
   schema?: string;
   breadcrumbs?: Array<{ name: string; url: string }>;
 }
@@ -15,20 +17,33 @@ export const SEO: React.FC<SEOProps> = ({
   description = "Professional UK, US & Australia Accounting, Bookkeeping, Payroll & Tax Advisory Services.", 
   canonical = "/", 
   type = 'website', 
+  image,
+  noindex = false,
   schema,
   breadcrumbs 
 }) => {
-  const siteUrl = 'https://arthanovaaccounts.com';
-  const fullUrl = `${siteUrl}${canonical}`;
+  const siteUrl = 'https://arthanovaccounts.com';
+  const cleanCanonical = canonical.startsWith('/') ? canonical : `/${canonical}`;
+  const fullUrl = canonical.startsWith('http') ? canonical : `${siteUrl}${cleanCanonical === '/' ? '/' : cleanCanonical}`;
   const siteName = 'ArthaNova Accounts';
-  const pageTitle = "ArthaNova Accounts | International Accounting & Tax Advisory";
+
+  let pageTitle = "ArthaNova Accounts | Tax & Corporate Advisory";
+  if (title) {
+    if (title === "ArthaNova Accounts | Tax & Corporate Advisory" || title.includes("ArthaNova Accounts")) {
+      pageTitle = title;
+    } else {
+      pageTitle = `${title} | ArthaNova Accounts`;
+    }
+  }
+
+  const ogImage = image ? (image.startsWith('http') ? image : `${siteUrl}${image.startsWith('/') ? image : `/${image}`}`) : `${siteUrl}/logo-an-mark-og.png`;
 
   const defaultWebsiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "ArthaNova Accounts",
-    "url": "https://arthanovaaccounts.com",
-    "description": "Professional UK, US & Australia Accounting, Bookkeeping, Payroll & Tax Advisory Services."
+    "url": siteUrl,
+    "description": description
   };
 
   const breadcrumbSchema = breadcrumbs && breadcrumbs.length > 0 ? {
@@ -38,7 +53,7 @@ export const SEO: React.FC<SEOProps> = ({
       "@type": "ListItem",
       "position": index + 1,
       "name": crumb.name,
-      "item": `${siteUrl}${crumb.url}`
+      "item": crumb.url.startsWith('http') ? crumb.url : `${siteUrl}${crumb.url.startsWith('/') ? crumb.url : `/${crumb.url}`}`
     }))
   } : null;
 
@@ -50,20 +65,27 @@ export const SEO: React.FC<SEOProps> = ({
       <meta name="description" content={description} />
       <link rel="canonical" href={fullUrl} />
 
+      {noindex ? (
+        <meta name="robots" content="noindex, nofollow" />
+      ) : (
+        <meta name="robots" content="index, follow, max-image-preview:large" />
+      )}
+
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
       <meta property="og:url" content={fullUrl} />
       <meta property="og:title" content={pageTitle} />
       <meta property="og:description" content={description} />
       <meta property="og:site_name" content={siteName} />
-      <meta property="og:image" content={`${siteUrl}/logo-an-mark-og.png`} />
+      <meta property="og:image" content={ogImage} />
+      <meta property="og:locale" content="en_US" />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:url" content={fullUrl} />
       <meta name="twitter:title" content={pageTitle} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={`${siteUrl}/logo-an-mark-og.png`} />
+      <meta name="twitter:image" content={ogImage} />
 
       {/* Schemas */}
       <script type="application/ld+json">

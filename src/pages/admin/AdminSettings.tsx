@@ -14,6 +14,7 @@ import {
 import { BreadcrumbNavigation } from '../../components/admin/BreadcrumbNavigation';
 import { useAuth } from '../../hooks/useAuth';
 import { authService } from '../../services/authService';
+import { SEO } from '../../components/SEO';
 
 export const AdminSettings: React.FC = () => {
   const { user, logout, refreshUser } = useAuth();
@@ -138,8 +139,10 @@ export const AdminSettings: React.FC = () => {
     : 'Configured';
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 15 }}
+    <>
+      <SEO title="Admin Settings" noindex={true} />
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
       className="space-y-6"
@@ -498,5 +501,6 @@ export const AdminSettings: React.FC = () => {
         </div>
       </div>
     </motion.div>
+    </>
   );
 };

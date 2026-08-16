@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin/
 
-Sitemap: https://arthanovaaccounts.com/sitemap.xml
+Sitemap: https://arthanovaccounts.com/sitemap.xml
+

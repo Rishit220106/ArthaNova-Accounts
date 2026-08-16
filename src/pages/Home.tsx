@@ -269,15 +269,10 @@ export const Home = () => {
 
 
       <SEO
-
-        title="ArthaNova Accounts | International Accounting & Tax Advisory"
-
+        title="ArthaNova Accounts | Tax & Corporate Advisory"
         description="Professional UK, US & Australia Accounting, Bookkeeping, Payroll & Tax Advisory Services."
-
         canonical="/"
-
-        schema={`{"@context":"https://schema.org","@type":"AccountingService","name":"ArthaNova Accounts","url":"https://arthanovaaccounts.com","logo":"https://arthanovaaccounts.com/logo-an-mark-og.png","description":"Professional UK, US & Australia Accounting, Bookkeeping, Payroll & Tax Advisory Services.","email":"${BUSINESS_CONTACT.email}","areaServed":[{"@type":"Country","name":"United Kingdom"},{"@type":"Country","name":"United States"},{"@type":"Country","name":"Australia"}]}`}
-
+        schema={`{"@context":"https://schema.org","@type":"AccountingService","name":"ArthaNova Accounts","url":"https://arthanovaccounts.com","logo":"https://arthanovaccounts.com/logo-an-mark-og.png","description":"Professional UK, US & Australia Accounting, Bookkeeping, Payroll & Tax Advisory Services.","email":"${BUSINESS_CONTACT.email}","areaServed":[{"@type":"Country","name":"United Kingdom"},{"@type":"Country","name":"United States"},{"@type":"Country","name":"Australia"}]}`}
       />
 
 

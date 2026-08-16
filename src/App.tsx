@@ -20,6 +20,7 @@ const Services = lazy(() => import('./pages/Services').then(module => ({ default
 const Jurisdictions = lazy(() => import('./pages/Jurisdictions').then(module => ({ default: module.Jurisdictions })));
 const Team = lazy(() => import('./pages/Team').then(module => ({ default: module.Team })));
 const Contact = lazy(() => import('./pages/Contact').then(module => ({ default: module.Contact })));
+const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default: module.NotFound })));
 
 const LoadingFallback = () => (
   <div className="flex items-center justify-center min-h-[50vh]">
@@ -69,6 +70,7 @@ export default function App() {
             <Route path="/jurisdictions" element={<PageTransition><Suspense fallback={<LoadingFallback />}><Jurisdictions /></Suspense></PageTransition>} />
             <Route path="/team" element={<PageTransition><Suspense fallback={<LoadingFallback />}><Team /></Suspense></PageTransition>} />
             <Route path="/contact" element={<PageTransition><Suspense fallback={<LoadingFallback />}><Contact /></Suspense></PageTransition>} />
+            <Route path="*" element={<PageTransition><Suspense fallback={<LoadingFallback />}><NotFound /></Suspense></PageTransition>} />
           </Routes>
         </AnimatePresence>
       </Layout>

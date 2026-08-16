@@ -98,7 +98,7 @@ export const Team = () => {
         title="Our Expert Accounting Team"
         description="Meet the senior partners and specialists at ArthaNova Accounts, delivering exceptional cross-border accounting and corporate structuring expertise."
         canonical="/team"
-        schema={`{"@context":"https://schema.org","@type":"AboutPage","name":"Our Expert Accounting Team | ArthaNova Accounts","url":"https://arthanovaaccounts.com/team"}`}
+        schema={`{"@context":"https://schema.org","@type":"AboutPage","name":"Our Expert Accounting Team | ArthaNova Accounts","url":"https://arthanovaccounts.com/team"}`}
 
         breadcrumbs={[{ "name": "Home", "url": "/" }, { "name": "Team", "url": "/team" }]}
       />

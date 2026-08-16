@@ -4,6 +4,7 @@ import { Plus, Download, Check, Sparkles, X } from 'lucide-react';
 import { BreadcrumbNavigation } from '../../components/admin/BreadcrumbNavigation';
 import { ContactTable } from '../../components/admin/ContactTable';
 import { useContacts } from '../../hooks/useContacts';
+import { SEO } from '../../components/SEO';
 
 export const AdminContacts: React.FC = () => {
   const { contacts, addContact, refreshContacts } = useContacts();
@@ -74,8 +75,10 @@ export const AdminContacts: React.FC = () => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 15 }}
+    <>
+      <SEO title="Admin Contacts" noindex={true} />
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
       className="space-y-6"
@@ -241,5 +244,6 @@ export const AdminContacts: React.FC = () => {
         )}
       </AnimatePresence>
     </motion.div>
+    </>
   );
 };
