@@ -1,5 +1,4 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { cn } from "@/src/lib/utils";
 
 interface LogoProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -9,19 +8,9 @@ interface LogoProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const Logo: React.FC<LogoProps> = ({ className, variant = 'dark', subtitleColor, ...props }) => {
-  let isHomePage = false;
-  try {
-    const location = useLocation();
-    isHomePage = location.pathname === '/';
-  } catch {
-    isHomePage = false;
-  }
-
   const accountsColorClass = subtitleColor
     ? subtitleColor
-    : isHomePage
-      ? (variant === 'light' ? 'text-white' : 'text-black')
-      : 'text-[#D4AF37]';
+    : variant === 'light' ? 'text-white' : 'text-black';
 
   return (
     <div className={cn("flex items-center", className)} {...props}>
