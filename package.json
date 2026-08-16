@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "packageManager": "bun@1.3.14",
+  "packageManager": "bun@1.2.15",
   "scripts": {
     "dev": "npm run start:backend & vite --port=3000 --host=0.0.0.0",
     "start:backend": "cd backend && PORT=5000 npm run dev",
