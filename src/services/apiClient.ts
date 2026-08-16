@@ -1,13 +1,16 @@
 const getApiBaseUrl = (): string => {
   const envUrl = import.meta.env.VITE_API_URL;
+
   if (envUrl) {
     const trimmed = envUrl.replace(/\/+$/, '');
     return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
   }
+
   if (import.meta.env.DEV) {
     return 'http://localhost:5000/api';
   }
-  return 'https://api.arthanovaccounts.com/api';
+
+  return 'https://arthanova-accounts.onrender.com/api';
 };
 
 const API_BASE_URL = getApiBaseUrl();
