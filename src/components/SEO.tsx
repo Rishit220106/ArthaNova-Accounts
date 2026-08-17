@@ -88,9 +88,6 @@ export const SEO: React.FC<SEOProps> = ({
       <meta name="twitter:image" content={ogImage} />
 
       {/* Schemas */}
-      <script type="application/ld+json">
-        {JSON.stringify(defaultWebsiteSchema)}
-      </script>
       {schema && (
         <script type="application/ld+json">
           {schema}
