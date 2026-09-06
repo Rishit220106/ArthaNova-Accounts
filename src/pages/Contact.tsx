@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button';
 import { Link } from 'react-router-dom';
 import { contactService } from '../services/contactService';
 import { BUSINESS_CONTACT } from '../constants/contact';
+import { PRIVACY_POLICY_VERSION } from '../constants/privacy';
 import { UKFlag, USFlag, AUFlag } from '../components/ui/Flags';
 
 const AVAILABLE_SERVICES = [
@@ -29,6 +30,8 @@ export const Contact = () => {
     jurisdiction: string;
     services: string[];
     message: string;
+    consentGiven: boolean;
+    marketingConsent: boolean;
   }>({
     firstName: '',
     lastName: '',
@@ -37,7 +40,9 @@ export const Contact = () => {
     company: '',
     jurisdiction: '',
     services: [],
-    message: ''
+    message: '',
+    consentGiven: false,
+    marketingConsent: false
   });
 
   const [isServicesOpen, setIsServicesOpen] = useState(false);
@@ -87,10 +92,13 @@ export const Contact = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormState({
-      ...formState,
-      [e.target.name]: e.target.value
-    });
+    const { name, value, type } = e.target;
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormState((prev) => ({ ...prev, [name]: checked }));
+    } else {
+      setFormState((prev) => ({ ...prev, [name]: value }));
+    }
     if (errorMessage) {
       setErrorMessage(null);
     }
@@ -127,6 +135,11 @@ export const Contact = () => {
       return;
     }
 
+    if (!formState.consentGiven) {
+      setErrorMessage('Explicit consent is required to process your contact enquiry as per our Privacy Notice.');
+      return;
+    }
+
     setIsSubmitting(true);
 
     const country = getCountryName(formState.jurisdiction);
@@ -138,7 +151,10 @@ export const Contact = () => {
       country: country,
       services: formState.services,
       service: formState.services.join(' · '),
-      message: formState.message.trim()
+      message: formState.message.trim(),
+      consentGiven: formState.consentGiven,
+      marketingConsent: formState.marketingConsent,
+      policyVersion: PRIVACY_POLICY_VERSION
     };
 
     try {
@@ -152,7 +168,9 @@ export const Contact = () => {
         company: '',
         jurisdiction: '',
         services: [],
-        message: ''
+        message: '',
+        consentGiven: false,
+        marketingConsent: false
       });
       setIsServicesOpen(false);
     } catch (err: any) {
@@ -608,6 +626,38 @@ export const Contact = () => {
                         placeholder="Describe your business goals and the accounting or tax support you're looking for..."
                       ></textarea>
                     </div>
+                  </div>
+
+                  {/* DPDP Consent Checkboxes (Unticked by default) */}
+                  <div className="space-y-3 pt-2 pb-1 border-t border-white/10">
+                    <label className="flex items-start gap-3 text-xs text-white/80 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        id="consentGiven"
+                        name="consentGiven"
+                        checked={formState.consentGiven}
+                        onChange={handleChange}
+                        required
+                        className="mt-0.5 w-4 h-4 rounded border-white/20 bg-[#07162D]/50 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer shrink-0"
+                      />
+                      <span className="leading-relaxed">
+                        I agree that ArthaNova Accounts may process the information I provide to respond to my enquiry, as described in the <Link to="/privacy" target="_blank" className="text-[#D4AF37] underline hover:text-[#E5C35A]">Privacy Notice</Link>. <span className="text-[#D4AF37]">*</span>
+                      </span>
+                    </label>
+
+                    <label className="flex items-start gap-3 text-xs text-white/80 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        id="marketingConsent"
+                        name="marketingConsent"
+                        checked={formState.marketingConsent}
+                        onChange={handleChange}
+                        className="mt-0.5 w-4 h-4 rounded border-white/20 bg-[#07162D]/50 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer shrink-0"
+                      />
+                      <span className="leading-relaxed">
+                        I would like to receive marketing updates, regulatory news, and professional insights from ArthaNova Accounts (Optional).
+                      </span>
+                    </label>
                   </div>
 
                   <button

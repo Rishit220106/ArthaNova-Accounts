@@ -141,11 +141,17 @@ export const Footer = () => {
 
         {/* Bottom Bar Divider */}
         <div className="pt-8 border-t border-[rgba(16,37,74,0.08)] flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-[#10254A]/70">
-          <p>© 2026 ArthaNova Accounts. All rights reserved. | <a href="https://arthanovaccounts.com" className="hover:text-[#D4AF37] transition-colors duration-250">arthanovaccounts.com</a></p>
-          <div className="flex items-center gap-2">
-            <Link to="/contact" className="hover:text-[#D4AF37] transition-colors duration-250">Privacy Policy</Link>
-            <span className="w-px h-3 bg-[#D4AF37]/60 inline-block align-middle mx-3" />
-            <Link to="/contact" className="hover:text-[#D4AF37] transition-colors duration-250">Terms of Service</Link>
+          <p>
+            © 2026 ArthaNova Accounts. All rights reserved. | <a href="https://arthanovaccounts.com" className="hover:text-[#D4AF37] transition-colors duration-250">arthanovaccounts.com</a>
+            <span className="hidden sm:inline"> | </span>
+            <span className="block sm:inline font-medium text-[#10254A]/80">Privacy / Grievance Contact: <a href="mailto:amisampatacca@gmail.com" className="hover:text-[#D4AF37] underline">amisampatacca@gmail.com</a></span>
+          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <Link to="/privacy" className="hover:text-[#D4AF37] transition-colors duration-250">Privacy Policy</Link>
+            <span className="w-px h-3 bg-[#D4AF37]/60 inline-block align-middle mx-2" />
+            <Link to="/terms" className="hover:text-[#D4AF37] transition-colors duration-250">Terms of Service</Link>
+            <span className="w-px h-3 bg-[#D4AF37]/60 inline-block align-middle mx-2" />
+            <Link to="/data-rights" className="hover:text-[#D4AF37] transition-colors duration-250">Data Rights</Link>
           </div>
         </div>
       </div>
