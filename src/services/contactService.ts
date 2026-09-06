@@ -36,6 +36,9 @@ export interface PublicContactPayload {
   services?: string[];
   service?: string;
   message: string;
+  consentGiven: boolean;
+  marketingConsent?: boolean;
+  policyVersion?: string;
 }
 
 export const mapBackendContactToFrontend = (item: any): Contact => {

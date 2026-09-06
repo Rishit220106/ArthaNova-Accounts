@@ -1,4 +1,5 @@
 import Contact from '../models/Contact.js';
+import ConsentRecord from '../models/ConsentRecord.js';
 import { asyncHandler, AppError } from '../utils/index.js';
 import { sendContactNotification } from '../services/emailService.js';
 
@@ -6,7 +7,11 @@ import { sendContactNotification } from '../services/emailService.js';
 // @route   POST /api/contact
 // @access  Public
 export const createContact = asyncHandler(async (req, res, next) => {
-  const { name, email, company, country, services, service, message } = req.body;
+  const { name, email, company, country, services, service, message, consentGiven, marketingConsent, policyVersion } = req.body;
+
+  if (!consentGiven || (typeof consentGiven === 'string' && consentGiven !== 'true')) {
+    return next(new AppError('Explicit consent is required to process your contact enquiry', 400));
+  }
 
   let serviceList = [];
   if (Array.isArray(services) && services.length > 0) {
@@ -28,6 +33,29 @@ export const createContact = asyncHandler(async (req, res, next) => {
     service: primaryServiceStr,
     message
   });
+
+  const acceptedPolicyVersion = policyVersion || '2026-09-01';
+
+  // Server-side audit consent logging
+  await ConsentRecord.create({
+    email: newContact.email,
+    purpose: 'contact_enquiry',
+    consentGiven: true,
+    policyVersion: acceptedPolicyVersion,
+    source: 'contact_form',
+    contactRef: newContact._id
+  });
+
+  if (marketingConsent === true || marketingConsent === 'true') {
+    await ConsentRecord.create({
+      email: newContact.email,
+      purpose: 'marketing_communications',
+      consentGiven: true,
+      policyVersion: acceptedPolicyVersion,
+      source: 'contact_form',
+      contactRef: newContact._id
+    });
+  }
 
   // Send email notification (non-blocking)
   try {

@@ -1,7 +1,7 @@
 import { check, validationResult } from 'express-validator';
 import { AppError } from '../utils/index.js';
 
-export const validateContact = [
+export const validateDataRightsRequest = [
   check('name')
     .notEmpty()
     .withMessage('Name is required')
@@ -12,27 +12,24 @@ export const validateContact = [
     .withMessage('Email is required')
     .isEmail()
     .withMessage('Please provide a valid email'),
-  check('company')
-    .optional()
-    .isLength({ max: 100 })
-    .withMessage('Company cannot exceed 100 characters'),
-  check('country')
-    .optional()
-    .isLength({ max: 100 })
-    .withMessage('Country cannot exceed 100 characters'),
-  check('message')
+  check('requestType')
     .notEmpty()
-    .withMessage('Message is required')
-    .isLength({ min: 10, max: 2000 })
-    .withMessage('Message must be between 10 and 2000 characters'),
+    .withMessage('Request type is required')
+    .isIn(['Access', 'Correction', 'Erasure', 'Withdrawal of Consent', 'Grievance'])
+    .withMessage('Invalid request type'),
+  check('details')
+    .notEmpty()
+    .withMessage('Request details are required')
+    .isLength({ min: 10, max: 3000 })
+    .withMessage('Details must be between 10 and 3000 characters'),
+  check('referenceId')
+    .optional()
+    .isLength({ max: 200 })
+    .withMessage('Reference ID cannot exceed 200 characters'),
   check('consentGiven')
     .custom((val) => val === true || val === 'true')
-    .withMessage('Explicit consent is required to process your contact enquiry'),
-  check('marketingConsent')
-    .optional()
-    .isBoolean()
-    .withMessage('Marketing consent must be a boolean value'),
-  
+    .withMessage('Consent and authorization confirmation is required'),
+
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
