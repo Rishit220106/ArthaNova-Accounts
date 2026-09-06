@@ -674,9 +674,6 @@ export const Contact = () => {
                       </>
                     )}
                   </button>
-                  <p className="text-xs text-white/50 text-center mt-4 font-light">
-                    Your information is strictly confidential and protected by enterprise-grade security.
-                  </p>
                 </form>
               )}
             </motion.div>
